@@ -5,8 +5,8 @@ POST http://localhost:3030/admin/flat
 Content-Type: application/json
 
 {
-  "block":"A",
-  "flat_number":103
+  "block":"B",
+  "flat_number":102
 }
 
 ### update flat details
@@ -20,3 +20,52 @@ Content-Type: application/json
 
 ### delete flat 
 DELETE http://localhost:3030/admin/flat/block/A/flat_number/103
+
+###get owner details
+GET http://localhost:3030/admin/owner/owner_id/2
+
+### add owner
+POST http://localhost:3030/admin/owner
+Content-Type: application/json
+
+{
+  "name":"testing",
+  "email":"testing@gmail.com",
+  "phone":1122334455,
+  "Flats":[
+    {
+      "block":"A",
+      "flat_number":103
+    },
+    {
+      "block":"B",
+      "flat_number":101
+    },
+    {
+      "block":"B",
+      "flat_number":102
+    }
+  ]
+}
+
+### update owner
+PUT http://localhost:3030/admin/owner/owner_id/13
+Content-Type: application/json
+
+{
+  "name":"vishnu",
+  "email":"vishnu@gmail.com"
+}
+
+### delete owner
+DELETE http://localhost:3030/admin/owner/owner_id/2
+
+### change owner 
+PUT http://localhost:3030/admin/changeOwner
+Content-Type: application/json
+
+{
+  "owner_id":13,
+  "block":"A",
+  "flat_number":103
+}
