@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.addConstraint("visitors_records", {
+    await queryInterface.addConstraint("visitors_record", {
       fields: ["visiting_to"],
       type: "foreign key",
       name: "fk_Visitors_visiting_to",
@@ -15,7 +15,7 @@ module.exports = {
       onUpdate: "CASCADE",
     });
 
-    await queryInterface.addConstraint("visitors_records", {
+    await queryInterface.addConstraint("visitors_record", {
       fields: ["authorized_by"],
       type: "foreign key",
       name: "fk_Visitors_authorized_by",
@@ -30,11 +30,11 @@ module.exports = {
 
   async down(queryInterface, Sequelize) {
     await queryInterface.removeConstraint(
-      "visitors_records",
+      "visitors_record",
       "fk_Visitors_visiting_to"
     );
     await queryInterface.removeConstraint(
-      "visitors_records",
+      "visitors_record",
       "fk_Visitors_authorized_by"
     );
   },
