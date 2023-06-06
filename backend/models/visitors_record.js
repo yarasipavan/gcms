@@ -1,22 +1,22 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class Visitors_records extends Model {
+  class Visitors_record extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Visitors_records.belongsTo(models.Security_guard, {
+      Visitors_record.belongsTo(models.Security_guard, {
         foreignKey: { name: "authorized_by", allowNull: false },
       });
-      Visitors_records.belongsTo(models.Occupants, {
+      Visitors_record.belongsTo(models.Occupants, {
         foreignKey: { name: "visiting_to" },
       });
     }
   }
-  Visitors_records.init(
+  Visitors_record.init(
     {
       visitor_name: DataTypes.STRING,
       visitor_aadhar: DataTypes.BIGINT,
@@ -28,9 +28,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "Visitors_records",
+      modelName: "Visitors_record",
       timestamps: false,
     }
   );
-  return Visitors_records;
+  return Visitors_record;
 };
