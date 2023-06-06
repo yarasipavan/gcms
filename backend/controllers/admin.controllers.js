@@ -1,6 +1,5 @@
 const { Association } = require("sequelize");
 const db = require("../models/index");
-console.log(db.Flats);
 const expressAsyncHandler = require("express-async-handler");
 
 // get flat details
@@ -145,6 +144,89 @@ const changeOwner = expressAsyncHandler(async (req, res) => {
   }
 });
 
+// add occupant
+const addOccupant = expressAsyncHandler(async (req, res) => {
+  // if occupied_from is not found then add today's date
+  if (!req.body.occupied_from) {
+    req.body.occupied_from = new Date();
+  }
+  console.log(req.body);
+  let occupant = await db.Occupants.create(req.body);
+  // assign flat to this occupant
+  console.log(occupant);
+  await db.Flats.update(
+    {
+      occupant_id: occupant.dataValues.occupant_id,
+      ownership: req.body.flat.ownership,
+      flat_status: true,
+    },
+    {
+      where: {
+        block: req.body.flat.block,
+        flat_number: req.body.flat.flat_number,
+      },
+    }
+  );
+
+  res.send({ message: "Ocuppant added succesfully", payload: occupant });
+});
+
+// get occupant
+const getOccupant = expressAsyncHandler(async (req, res) => {
+  let occupant = await db.Occupants.findOne({
+    where: {
+      occupant_id: req.params.occupant_id,
+    },
+    include: [db.Flats],
+  });
+  if (occupant) res.send(occupant);
+  else {
+    res.send({ alertMsg: "No Occupant found" });
+  }
+});
+// update occupant
+const updateOccupant = expressAsyncHandler(async (req, res) => {
+  console.log(req.params.occupant_id);
+  let [updates] = await db.Occupants.update(req.body, {
+    where: {
+      occupant_id: req.params.occupant_id,
+    },
+  });
+  console.log(updates);
+  // get updated occupant details
+  let updatedDetails = await db.Occupants.findByPk(req.params.occupant_id);
+  if (updates) {
+    res.send({ message: "Updation successfull", payload: updatedDetails });
+  } else {
+    res.send({ alertMsg: "Something went wrong... updation failed" });
+  }
+});
+
+// delete / remove occupant
+const deleteOccupant = expressAsyncHandler(async (req, res) => {
+  //set ownership and occupant_id to null and flat status to false in flats
+  // add vacated_at as today's date in occupants
+  const t = await db.sequelize.transaction();
+  try {
+    await db.Flats.update(
+      { ownership: null, occupant_id: null, flat_staus: true },
+      { where: { occupant_id: req.params.occupant_id } },
+      { transaction: t }
+    );
+    await db.Occupants.update(
+      { vacated_at: new Date() },
+      { where: { occupant_id: req.params.occupant_id } },
+      { transaction: t }
+    );
+
+    await t.commit();
+    res.send({ message: "Occupant removed successfully" });
+  } catch (err) {
+    await t.rollback();
+    res.send({ alertMsg: "Something went wrong... please try again" });
+  }
+});
+
 module.exports = {
   getFlatsDetails,
   addFlat,
@@ -155,4 +237,8 @@ module.exports = {
   updateOwner,
   deleteOwner,
   changeOwner,
+  addOccupant,
+  getOccupant,
+  updateOccupant,
+  deleteOccupant,
 };

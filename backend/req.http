@@ -69,3 +69,32 @@ Content-Type: application/json
   "block":"A",
   "flat_number":103
 }
+
+### add occupant
+POST http://localhost:3030/admin/occupant
+Content-Type: application/json
+
+{
+  "occupant_name":"vishnu",
+  "email":"vushnu.dummy@gmail.com",
+  "phone":1234567890,
+  "flat":{
+    "block":"A",
+    "flat_number":102,
+    "ownership":"tenant"
+  }
+}
+
+### get occupant details
+GET http://localhost:3030/admin/occupant/6
+
+### update occupant
+PUT http://localhost:3030/admin/occupant/6
+Content-Type: application/json
+
+{
+  "phone":9988776655
+}
+
+### delete occupant
+DELETE http://localhost:3030/admin/occupant/6

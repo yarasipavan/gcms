@@ -16,6 +16,10 @@ const {
   updateOwner,
   deleteOwner,
   changeOwner,
+  addOccupant,
+  getOccupant,
+  updateOccupant,
+  deleteOccupant,
 } = require("../controllers/admin.controllers");
 
 // routes
@@ -46,4 +50,16 @@ router.delete("/owner/owner_id/:owner_id", deleteOwner);
 
 // change owner
 router.put("/changeOwner", changeOwner);
+
+// add occupant
+router.post("/occupant", addOccupant);
+
+// get occupant
+router.get("/occupant/:occupant_id", getOccupant);
+
+// update occupant
+router.put("/occupant/:occupant_id", updateOccupant);
+// delete / remove occupant
+router.delete("/occupant/:occupant_id", deleteOccupant);
+
 module.exports = router;
