@@ -10,6 +10,12 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Occupants.hasOne(models.Flats, { foreignKey: { name: "occupant_id" } });
+      Occupants.hasOne(models.Services, {
+        foreignKey: { name: "occupant_id", allowNull: false },
+      });
+      Occupants.hasMany(models.Visitors_record, {
+        foreignKey: { name: "visiting_to" },
+      });
     }
   }
   Occupants.init(
