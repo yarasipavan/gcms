@@ -13,9 +13,14 @@ module.exports = (sequelize, DataTypes) => {
   }
   Credentials.init(
     {
-      username: DataTypes.STRING,
-      password: DataTypes.STRING,
-      status: { type: DataTypes.BOOLEAN, defaultValue: true },
+      user_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      username: { type: DataTypes.STRING, allowNull: false },
+      password: { type: DataTypes.STRING, allowNull: false },
+      status: { type: DataTypes.BOOLEAN, defaultValue: true, allowNull: false },
+      role: { type: DataTypes.STRING, allowNull: false },
     },
     {
       sequelize,

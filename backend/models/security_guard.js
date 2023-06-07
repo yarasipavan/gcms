@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Security_guard.hasMany(models.Vistors_record, {
+      Security_guard.hasMany(models.Visitors_record, {
         foreignKey: { name: "authorized_by", allowNull: false },
       });
     }
@@ -24,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: "Security_guard",
       timestamps: false,
+      freezeTableName: true,
     }
   );
   return Security_guard;
