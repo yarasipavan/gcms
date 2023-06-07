@@ -1,5 +1,8 @@
 GET http://localhost:3030/admin/flats-details
 
+### get vacant flats
+GET http://localhost:3030/admin/vacant-flats
+
 ### add flat
 POST http://localhost:3030/admin/flat
 Content-Type: application/json
@@ -75,12 +78,12 @@ POST http://localhost:3030/admin/occupant
 Content-Type: application/json
 
 {
-  "occupant_name":"vishnu",
-  "email":"vushnu.dummy@gmail.com",
-  "phone":1234567890,
+  "occupant_name":"occupant",
+  "email":"occupant@gmail.com",
+  "phone":9911882277,
   "flat":{
     "block":"A",
-    "flat_number":102,
+    "flat_number":101,
     "ownership":"tenant"
   }
 }
@@ -97,4 +100,28 @@ Content-Type: application/json
 }
 
 ### delete occupant
-DELETE http://localhost:3030/admin/occupant/6
+DELETE http://localhost:3030/admin/occupant/7
+
+### add security guard
+POST http://localhost:3030/admin/security
+Content-Type: application/json
+
+{
+  "name":"security1",
+  "email":"security.dummy@gmail.com",
+  "phone":11223344
+}
+
+### get security details
+GET http://localhost:3030/admin/security/1
+
+### update security
+PUT http://localhost:3030/admin/security/1 
+Content-Type: application/json
+
+{
+  "name":"security updated"
+}
+
+### delete security
+DELETE http://localhost:3030/admin/security/3
