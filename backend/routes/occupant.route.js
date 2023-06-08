@@ -1,13 +1,13 @@
-//  create mini express application
+// create mini express app
 const express = require("express");
 const router = express.Router();
-
-const { login } = require("../controllers/public.controllers");
 
 // body-parser
 router.use(express.json());
 
-router.post("/login", login);
+// import middlewares
+
+// import request handlers / constrollers
 
 // export router
 module.exports = router;

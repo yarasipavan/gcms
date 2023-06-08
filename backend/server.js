@@ -4,6 +4,7 @@ const app = express();
 
 // import modules
 const adminRoute = require("./routes/admin.routes");
+const publicRoute = require("./routes/public.routes");
 
 //  configure dotenv
 require("dotenv").config();
@@ -15,6 +16,7 @@ app.listen(port, () => {
 });
 
 // APIs
+app.use("/", publicRoute);
 app.use("/admin", adminRoute);
 
 // error handler middleware

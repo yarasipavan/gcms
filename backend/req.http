@@ -1,4 +1,5 @@
 GET http://localhost:3030/admin/flats-details
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMywidXNlcl9pZCI6MTAwMSwidXNlcm5hbWUiOiJhZG1pbiIsInBhc3N3b3JkIjoiJDJhJDA1JEV6bjZ6LnNiTkVEZVZTTDh5WERKUC5MMmZoWDZIbkFraGJmS0xSUldXVFJGdlU2Y1JHZFI2Iiwic3RhdHVzIjp0cnVlLCJyb2xlIjoiYWRtaW4ifSwiaWF0IjoxNjg2MTQzNzcyLCJleHAOjE2ODY3NDg1NzJ9.cD7vEK0l_un9EJkg6Ae9zkHUbTUIhuwJa7RRkzjG3RE 
 
 ### get vacant flats
 GET http://localhost:3030/admin/vacant-flats
@@ -125,3 +126,12 @@ Content-Type: application/json
 
 ### delete security
 DELETE http://localhost:3030/admin/security/3
+
+### login
+POST http://localhost:3030/login
+Content-Type: application/json
+
+{
+  "username":"Admin",
+  "password":"admin"
+}
