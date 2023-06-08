@@ -220,6 +220,11 @@ const addOccupant = expressAsyncHandler(async (req, res) => {
         transaction: t,
       }
     );
+    // add occupant id in services;
+    await db.Services.create(
+      { occupant_id: occupant.occupant_id },
+      { transaction: t }
+    );
 
     // generate credentails
     let password = generatePassword();

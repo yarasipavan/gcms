@@ -17,14 +17,16 @@ exports.verifyToken = (req, res, next) => {
     let token = bearerToken.split(" ")[1];
     //verify Token
     jwt.verify(token, process.env.TOKEN_SECRET_KEY, (err, decoded) => {
-      console.log(decoded);
       if (err) {
         res
           .status(401)
           .send({ alertMsg: "Session Expired please login again..." });
       } else {
         if (decoded.user.role == "admin" && decoded.user.status) {
-          req.user = { user_id: decoded.user_id, email: decoded.username };
+          req.user = {
+            user_id: decoded.user.user_id,
+            email: decoded.user.username,
+          };
           next();
         } else {
           res.status(401).send({ alertMsg: "You are not authorized user.." });

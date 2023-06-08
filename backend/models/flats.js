@@ -12,12 +12,6 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Flats.belongsTo(models.Owners, { foreignKey: "owner_id" });
       Flats.belongsTo(models.Occupants, { foreignKey: "occupant_id" });
-      Flats.hasMany(models.Bills, {
-        foreignKey: { name: "block", allowNull: false },
-      });
-      Flats.hasMany(models.Bills, {
-        foreignKey: { name: "flat_number", allowNull: false },
-      });
     }
   }
   Flats.init(

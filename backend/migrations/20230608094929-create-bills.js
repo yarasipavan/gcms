@@ -9,47 +9,45 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      block: {
-        type: Sequelize.STRING,
-      },
-      flat_number: {
+      occupant_id: {
         type: Sequelize.INTEGER,
+        allowNull: false,
       },
       swimming_pool_bill: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT,
       },
       parking_bill: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT,
       },
       house_keeping_bill: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT,
       },
       gym_bill: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT,
       },
       park_bill: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT,
       },
       indoor_auditorium_bill: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT,
       },
       security_bill: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT,
       },
       maintenance_bill: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT,
       },
       gardening_bill: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT,
       },
       charity_bill: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT,
       },
       community_bill: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT,
       },
       total_bill: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT,
       },
       billed_date: {
         type: Sequelize.DATE,

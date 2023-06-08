@@ -16,6 +16,9 @@ module.exports = (sequelize, DataTypes) => {
       Occupants.hasMany(models.Visitors_record, {
         foreignKey: { name: "visiting_to" },
       });
+      Occupants.hasMany(models.Bills, {
+        foreignKey: { name: "occupant_id", allowNull: false },
+      });
     }
   }
   Occupants.init(

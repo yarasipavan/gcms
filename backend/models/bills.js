@@ -8,19 +8,14 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
-      Bills.belongsTo(models.Flats, {
-        foreignKey: { name: "block", allowNull: false },
-      });
-      Bills.belongsTo(models.Flats, {
-        foreignKey: { name: "flat_number", allowNull: false },
+      Bills.belongsTo(models.Occupants, {
+        foreignKey: { name: "occupant_id", allowNull: false },
       });
     }
   }
   Bills.init(
     {
-      block: { type: DataTypes.STRING, allowNull: false },
-      flat_number: { type: DataTypes.INTEGER, allowNull: false },
+      occupant_id: { type: DataTypes.INTEGER, allowNull: false },
       swimming_pool_bill: DataTypes.INTEGER,
       parking_bill: DataTypes.INTEGER,
       house_keeping_bill: DataTypes.INTEGER,

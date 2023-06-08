@@ -13,7 +13,7 @@ module.exports = {
       occupant_id: {
         type: Sequelize.INTEGER,
       },
-      swimming_poop_starts: {
+      swimming_pool_starts: {
         type: Sequelize.DATE,
       },
       swimming_pool_ends: {
@@ -31,7 +31,7 @@ module.exports = {
       house_keeping_ends: {
         type: Sequelize.DATE,
       },
-      gym_start: {
+      gym_starts: {
         type: Sequelize.DATE,
       },
       gym_ends: {
