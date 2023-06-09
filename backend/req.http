@@ -135,8 +135,8 @@ POST http://localhost:3030/login
 Content-Type: application/json
 
 {
-  "username":"occupant102.dummy@abc.com",
-  "password":"Z9E#goP7"
+  "username":"occupant101.dummy@abc.com",
+  "password":"mTj1#!&M"
 }
 
 ### get using sercices of occupant
@@ -167,3 +167,25 @@ Content-Type: application/json
 {
   "service":"swimming_pool"
 }
+
+### update profile occupant
+PUT http://localhost:3030/occupant/profile
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyNywidXNlcl9pZCI6NDksInVzZXJuYW1lIjoib2NjdXBhbnQxMDEuZHVtbXlAYWJjLmNvbSIsInBhc3N3b3JkIjoiJDJhJDA1JGplMGlTclBJMDRWL05aYTQ1UDdhQXVlbWoxWTR3TC84Li5ZckM4YjVoY2cuNGkwMnl0ZXpXIiwic3RhdHVzIjp0cnVlLCJyb2xlIjoib2NjdXBhbnQifSwiaWF0IjoxNjg2Mjg2MTc5LCJleHAiOjE2ODY4OTA5Nzl9.Zyfyvc3tH_D_eBQ9mO-6MWL5-WrUtph_OBzF-MjJccw
+
+{
+  "phone":9988776655
+}
+
+### get profile occupant
+GET http://localhost:3030/occupant/profile
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyNywidXNlcl9pZCI6NDksInVzZXJuYW1lIjoib2NjdXBhbnQxMDEuZHVtbXlAYWJjLmNvbSIsInBhc3N3b3JkIjoiJDJhJDA1JGplMGlTclBJMDRWL05aYTQ1UDdhQXVlbWoxWTR3TC84Li5ZckM4YjVoY2cuNGkwMnl0ZXpXIiwic3RhdHVzIjp0cnVlLCJyb2xlIjoib2NjdXBhbnQifSwiaWF0IjoxNjg2Mjg2MTc5LCJleHAiOjE2ODY4OTA5Nzl9.Zyfyvc3tH_D_eBQ9mO-6MWL5-WrUtph_OBzF-MjJccw
+
+
+### get bill
+GET  http://localhost:3030/occupant/bill/year/2023/month/5
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyNywidXNlcl9pZCI6NDksInVzZXJuYW1lIjoib2NjdXBhbnQxMDEuZHVtbXlAYWJjLmNvbSIsInBhc3N3b3JkIjoiJDJhJDA1JGplMGlTclBJMDRWL05aYTQ1UDdhQXVlbWoxWTR3TC84Li5ZckM4YjVoY2cuNGkwMnl0ZXpXIiwic3RhdHVzIjp0cnVlLCJyb2xlIjoib2NjdXBhbnQifSwiaWF0IjoxNjg2Mjg2MTc5LCJleHAiOjE2ODY4OTA5Nzl9.Zyfyvc3tH_D_eBQ9mO-6MWL5-WrUtph_OBzF-MjJccw
+
+### get bill -admin user
+GET  http://localhost:3030/admin/bill/occupant/40/year/2023/month/5
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMywidXNlcl9pZCI6MTAwMSwidXNlcm5hbWUiOiJhZG1pbiIsInBhc3N3b3JkIjoiJDJhJDA1JEV6bjZ6LnNiTkVEZVZTTDh5WERKUC5MMmZoWDZIbkFraGJmS0xSUldXVFJGdlU2Y1JHZFI2Iiwic3RhdHVzIjp0cnVlLCJyb2xlIjoiYWRtaW4ifSwiaWF0IjoxNjg2MjAwMDc0LCJleHAiOjE2ODY4MDQ4NzR9.43Hkt1kcirpe52v14fe-TlFvsfDlrvxlbx1QJ7y__6w

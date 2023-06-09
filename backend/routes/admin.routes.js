@@ -29,6 +29,7 @@ const {
   getSecurity,
   updateSecurity,
   deleteSecurity,
+  getBill,
   // sendMail,
 } = require("../controllers/admin.controllers");
 
@@ -94,5 +95,12 @@ router.put("/security/:id", verifyToken, updateSecurity);
 
 // delete security
 router.delete("/security/:id", verifyToken, deleteSecurity);
+
+// get bill
+router.get(
+  "/bill/occupant/:occupant_id/year/:year/month/:month",
+  verifyToken,
+  getBill
+);
 
 module.exports = router;

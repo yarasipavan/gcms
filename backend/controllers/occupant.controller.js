@@ -183,3 +183,49 @@ exports.stopService = expressAsyncHandler(async (req, res) => {
     res.send({ alertmsg: "Something went wrong.... service not stopped" });
   }
 });
+
+// update profile
+exports.updateProfile = expressAsyncHandler(async (req, res) => {
+  let [updates] = await db.Occupants.update(req.body, {
+    where: { occupant_id: req.user.user_id },
+  });
+
+  if (updates) {
+    // get the latest details
+    let updatedOccupant = await db.Occupants.findByPk(req.user.user_id);
+    res.send({ message: "Profile updated", payload: updatedOccupant });
+  } else {
+    res.send({ alertMsg: "No Updations found" });
+  }
+});
+
+// get profile
+exports.getProfile = expressAsyncHandler(async (req, res) => {
+  let occupant = await db.Occupants.findByPk(req.user.user_id);
+  res.send({ message: "Profile", payload: occupant });
+});
+
+exports.getBill = expressAsyncHandler(async (req, res) => {
+  let month = parseInt(req.params.month) - 1;
+  let year = parseInt(req.params.year);
+
+  // bill is calculated on next month
+
+  // Calculate the next month and year
+  let nextMonth = (month + 1) % 12;
+  let nextMonthYear = month === 11 ? year + 1 : year;
+  let nextMonthFirstDate = new Date(nextMonthYear, nextMonth, 1);
+  let nextMonthLastDate = new Date(nextMonthYear, nextMonth + 1, 0);
+
+  // get the bill
+  let billRecord = await db.Bills.findOne({
+    where: {
+      occupant_id: req.user.user_id,
+      billed_date: {
+        [Sequelize.Op.between]: [nextMonthFirstDate, nextMonthLastDate],
+      },
+    },
+  });
+  if (billRecord) res.send(billRecord);
+  else res.send({ alertMsg: "No billing found" });
+});

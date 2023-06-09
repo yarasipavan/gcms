@@ -1,4 +1,5 @@
 const db = require("../models/index");
+const { Sequelize } = require("sequelize");
 
 const expressAsyncHandler = require("express-async-handler");
 const bcryptjs = require("bcryptjs");
@@ -389,6 +390,30 @@ const deleteSecurity = expressAsyncHandler(async (req, res) => {
   }
 });
 
+const getBill = expressAsyncHandler(async (req, res) => {
+  let month = parseInt(req.params.month) - 1;
+  let year = parseInt(req.params.year);
+
+  // bill is calculated on next month
+
+  let nextMonth = (month + 1) % 12;
+  let nextMonthYear = month === 11 ? year + 1 : year;
+  let nextMonthFirstDate = new Date(nextMonthYear, nextMonth, 1);
+  let nextMonthLastDate = new Date(nextMonthYear, nextMonth + 1, 0);
+
+  // get the bill
+  let billRecord = await db.Bills.findOne({
+    where: {
+      occupant_id: req.params.occupant_id,
+      billed_date: {
+        [Sequelize.Op.between]: [nextMonthFirstDate, nextMonthLastDate],
+      },
+    },
+  });
+  if (billRecord) res.send(billRecord);
+  else res.send({ alertMsg: "No billing found" });
+});
+
 module.exports = {
   getFlatsDetails,
   addFlat,
@@ -408,4 +433,5 @@ module.exports = {
   getSecurity,
   updateSecurity,
   deleteSecurity,
+  getBill,
 };

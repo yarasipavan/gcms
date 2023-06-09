@@ -14,6 +14,9 @@ const {
   addServices,
   stopService,
   getNotUsingServices,
+  updateProfile,
+  getProfile,
+  getBill,
 } = require("../controllers/occupant.controller");
 
 // routes
@@ -29,6 +32,15 @@ router.post("/add-services", verifyToken, addServices);
 
 // stop service
 router.delete("/stop-service", verifyToken, stopService);
+
+// update profile
+router.put("/profile", verifyToken, updateProfile);
+
+// get profile
+router.get("/profile", verifyToken, getProfile);
+
+// get bill
+router.get("/bill/year/:year/month/:month", verifyToken, getBill);
 
 // export router
 module.exports = router;
