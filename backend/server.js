@@ -1,10 +1,13 @@
 // /create express application
 const express = require("express");
 const app = express();
-
 // import modules
 const adminRoute = require("./routes/admin.routes");
+const publicRoute = require("./routes/public.routes");
+const occupantRoute = require("./routes/occupant.route");
 
+// import schedules
+const billSchedule = require("./schedule/bill.schedule");
 //  configure dotenv
 require("dotenv").config();
 
@@ -15,7 +18,12 @@ app.listen(port, () => {
 });
 
 // APIs
+app.use("/", publicRoute);
 app.use("/admin", adminRoute);
+app.use("/occupant", occupantRoute);
+
+// schedule
+// ----------------------
 
 // error handler middleware
 app.use((err, req, res, next) => {

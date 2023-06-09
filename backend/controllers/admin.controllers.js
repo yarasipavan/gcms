@@ -205,20 +205,31 @@ const addOccupant = expressAsyncHandler(async (req, res) => {
     // create occupant
     let occupant = await db.Occupants.create(req.body, { transaction: t });
 
-    // assign flat to this occupant
-    await db.Flats.update(
-      {
-        occupant_id: occupant.dataValues.occupant_id,
-        ownership: req.body.flat.ownership,
-        flat_status: true,
-      },
-      {
-        where: {
-          block: req.body.flat.block,
-          flat_number: req.body.flat.flat_number,
-        },
-        transaction: t,
+    let updatesInFlats = {
+      occupant_id: occupant.occupant_id,
+      ownership: req.body.flat.ownership,
+      flat_status: true,
+    };
+    if (updatesInFlats["ownership"] == "tenant") {
+      if (req.body.flat.rent) {
+        updatesInFlats.rent = req.body.flat.rent;
       }
+    } else {
+      updatesInFlats.rent = 0;
+    }
+
+    await db.Flats.update(updatesInFlats, {
+      where: {
+        block: req.body.flat.block,
+        flat_number: req.body.flat.flat_number,
+      },
+      transaction: t,
+    });
+
+    // add occupant id in services;
+    await db.Services.create(
+      { occupant_id: occupant.occupant_id },
+      { transaction: t }
     );
 
     // generate credentails
@@ -285,21 +296,21 @@ const deleteOccupant = expressAsyncHandler(async (req, res) => {
   try {
     await db.Flats.update(
       { ownership: null, occupant_id: null, flat_status: false },
-      { where: { occupant_id: req.params.occupant_id } },
-      { transaction: t }
+      { where: { occupant_id: req.params.occupant_id }, transaction: t }
     );
     await db.Occupants.update(
       { vacated_at: new Date() },
-      { where: { occupant_id: req.params.occupant_id } },
-      { transaction: t }
+      { where: { occupant_id: req.params.occupant_id }, transaction: t }
     );
 
     await db.Credentials.update(
       {
         status: false,
       },
-      { where: { user_id: req.params.occupant_id, role: "occupant" } },
-      { transaction: t }
+      {
+        where: { user_id: req.params.occupant_id, role: "occupant" },
+        transaction: t,
+      }
     );
     await t.commit();
     res.send({ message: "Occupant removed successfully" });
