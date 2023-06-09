@@ -108,11 +108,11 @@ exports.stopService = expressAsyncHandler(async (req, res) => {
 
     // calculate difference between result[${service}_starts] and todays day
     let start_date = new Date(result[`${service}_starts`]);
-    console.log(start_date);
     let end_date = new Date();
 
     const year = end_date.getFullYear();
     const month = end_date.getMonth();
+
     const firstOfMonth = new Date(year, month, 1);
     let no_of_days = 0;
 
@@ -121,7 +121,6 @@ exports.stopService = expressAsyncHandler(async (req, res) => {
     }
 
     no_of_days = Math.floor((end_date - start_date) / (1000 * 60 * 60 * 24));
-    console.log(no_of_days);
 
     // get the cast of the service from service charges
 
@@ -145,6 +144,7 @@ exports.stopService = expressAsyncHandler(async (req, res) => {
         billed_date: {
           [Sequelize.Op.between]: [start_bill_date, end_bill_date],
         },
+        occupant_id: req.user.user_id,
       },
       transaction: t,
     });

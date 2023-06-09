@@ -81,11 +81,11 @@ Content-Type: application/json
 Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMywidXNlcl9pZCI6MTAwMSwidXNlcm5hbWUiOiJhZG1pbiIsInBhc3N3b3JkIjoiJDJhJDA1JEV6bjZ6LnNiTkVEZVZTTDh5WERKUC5MMmZoWDZIbkFraGJmS0xSUldXVFJGdlU2Y1JHZFI2Iiwic3RhdHVzIjp0cnVlLCJyb2xlIjoiYWRtaW4ifSwiaWF0IjoxNjg2MjAwMDc0LCJleHAiOjE2ODY4MDQ4NzR9.43Hkt1kcirpe52v14fe-TlFvsfDlrvxlbx1QJ7y__6w
 
 {
-  "occupant_name":"occupant dummy",
-  "email":"occupant.dummy@abc.com",
+  "occupant_name":"occupant 102",
+  "email":"occupant102.dummy@abc.com",
   "phone":1122334499,
   "flat":{
-    "block":"B",
+    "block":"A",
     "flat_number":101,
     "ownership":"tenant"
   }
@@ -103,7 +103,8 @@ Content-Type: application/json
 }
 
 ### delete occupant
-DELETE http://localhost:3030/admin/occupant/7
+DELETE http://localhost:3030/admin/occupant/48
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMywidXNlcl9pZCI6MTAwMSwidXNlcm5hbWUiOiJhZG1pbiIsInBhc3N3b3JkIjoiJDJhJDA1JEV6bjZ6LnNiTkVEZVZTTDh5WERKUC5MMmZoWDZIbkFraGJmS0xSUldXVFJGdlU2Y1JHZFI2Iiwic3RhdHVzIjp0cnVlLCJyb2xlIjoiYWRtaW4ifSwiaWF0IjoxNjg2MjAwMDc0LCJleHAiOjE2ODY4MDQ4NzR9.43Hkt1kcirpe52v14fe-TlFvsfDlrvxlbx1QJ7y__6w 
 
 ### add security guard
 POST http://localhost:3030/admin/security
@@ -134,8 +135,8 @@ POST http://localhost:3030/login
 Content-Type: application/json
 
 {
-  "username":"occupant.dummy@abc.com",
-  "password":"wt1WY54K"
+  "username":"occupant102.dummy@abc.com",
+  "password":"Z9E#goP7"
 }
 
 ### get using sercices of occupant
@@ -151,7 +152,7 @@ Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyN
 
 ### add services
 POST http://localhost:3030/occupant/add-services
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyNCwidXNlcl9pZCI6NDYsInVzZXJuYW1lIjoib2NjdXBhbnQuZHVtbXlAYWJjLmNvbSIsInBhc3N3b3JkIjoiJDJhJDA1JDY3c2RvNDdxWURlbzkzTUZvL3RTUnVxc0V5eEdGM2ZTLlVZN1pRdXhPR3F1MkM3WHFaMU1HIiwic3RhdHVzIjp0cnVlLCJyb2xlIjoib2NjdXBhbnQifSwiaWF0IjoxNjg2MjA1Njc4LCJleHAiOjE2ODY4MTA0Nzh9.mf9qM9yLlOv6u5-FnAh7XxiYS7iZuoWVG1G2N29uFm0
+Authorization:bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyOCwidXNlcl9pZCI6NTAsInVzZXJuYW1lIjoib2NjdXBhbnQxMDIuZHVtbXlAYWJjLmNvbSIsInBhc3N3b3JkIjoiJDJhJDA1JGxWUU1YVElFQlFZVW5zTUNtUWRLNS5TeDRUS0E4YlMvYVVFY2VDandDS1FENDRUbjBIZEs2Iiwic3RhdHVzIjp0cnVlLCJyb2xlIjoib2NjdXBhbnQifSwiaWF0IjoxNjg2MjI3NTY2LCJleHAiOjE2ODY4MzIzNjZ9.dxvjwY_oEbJPG7ec3i-_Bfyoc1w_1mAFo91dB6kK7aY
 Content-Type: application/json
 
 {
@@ -160,9 +161,9 @@ Content-Type: application/json
 
 ### stop services
 DELETE  http://localhost:3030/occupant/stop-service
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyNCwidXNlcl9pZCI6NDYsInVzZXJuYW1lIjoib2NjdXBhbnQuZHVtbXlAYWJjLmNvbSIsInBhc3N3b3JkIjoiJDJhJDA1JDY3c2RvNDdxWURlbzkzTUZvL3RTUnVxc0V5eEdGM2ZTLlVZN1pRdXhPR3F1MkM3WHFaMU1HIiwic3RhdHVzIjp0cnVlLCJyb2xlIjoib2NjdXBhbnQifSwiaWF0IjoxNjg2MjA1Njc4LCJleHAiOjE2ODY4MTA0Nzh9.mf9qM9yLlOv6u5-FnAh7XxiYS7iZuoWVG1G2N29uFm0
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyOCwidXNlcl9pZCI6NTAsInVzZXJuYW1lIjoib2NjdXBhbnQxMDIuZHVtbXlAYWJjLmNvbSIsInBhc3N3b3JkIjoiJDJhJDA1JGxWUU1YVElFQlFZVW5zTUNtUWRLNS5TeDRUS0E4YlMvYVVFY2VDandDS1FENDRUbjBIZEs2Iiwic3RhdHVzIjp0cnVlLCJyb2xlIjoib2NjdXBhbnQifSwiaWF0IjoxNjg2MjI3NTY2LCJleHAiOjE2ODY4MzIzNjZ9.dxvjwY_oEbJPG7ec3i-_Bfyoc1w_1mAFo91dB6kK7aY
 Content-Type: application/json
 
 {
-  "service":"gym"
+  "service":"swimming_pool"
 }

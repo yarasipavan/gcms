@@ -27,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       gardening_bill: DataTypes.INTEGER,
       charity_bill: DataTypes.INTEGER,
       community_bill: DataTypes.INTEGER,
+      rent_bill: DataTypes.INTEGER,
       total_bill: DataTypes.INTEGER,
       billed_date: DataTypes.DATE,
       bill_doc: DataTypes.BLOB,
