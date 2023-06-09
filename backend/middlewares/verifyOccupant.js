@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 //funtion to verify the token and pass the flow
-exports.verifyToken = (req, res, next) => {
+exports.verifyOccupant = (req, res, next) => {
   //lets get the bearerToken from request headers
   let bearerToken = req.headers.authorization;
   // if bearer token in not existed, the user is not authorized

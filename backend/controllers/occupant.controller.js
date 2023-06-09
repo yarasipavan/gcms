@@ -22,7 +22,7 @@ exports.getUsingServices = expressAsyncHandler(async (req, res) => {
       usingServices.push(service);
     }
   }
-  res.send(usingServices);
+  res.status(200).send(usingServices);
 });
 
 // get not using services
@@ -48,7 +48,7 @@ exports.getNotUsingServices = expressAsyncHandler(async (req, res) => {
       notUsingServices.push(service);
     }
   }
-  res.send(notUsingServices);
+  res.status(200).send(notUsingServices);
 });
 
 // add services
@@ -89,7 +89,9 @@ exports.addServices = expressAsyncHandler(async (req, res) => {
       payload: updatedServiceDetails,
     });
   } else {
-    res.send({ alertMsg: "Something went wrong... please try again" });
+    res
+      .status(500)
+      .send({ alertMsg: "Something went wrong... please try again" });
   }
 });
 
@@ -176,11 +178,13 @@ exports.stopService = expressAsyncHandler(async (req, res) => {
     );
 
     await t.commit();
-    res.send({ message: "service paused successfully" });
+    res.status(200).send({ message: "service paused successfully" });
   } catch (err) {
     await t.rollback();
     console.log(err.message);
-    res.send({ alertmsg: "Something went wrong.... service not stopped" });
+    res
+      .status(500)
+      .send({ alertmsg: "Something went wrong.... service not stopped" });
   }
 });
 
@@ -193,16 +197,18 @@ exports.updateProfile = expressAsyncHandler(async (req, res) => {
   if (updates) {
     // get the latest details
     let updatedOccupant = await db.Occupants.findByPk(req.user.user_id);
-    res.send({ message: "Profile updated", payload: updatedOccupant });
+    res
+      .status(200)
+      .send({ message: "Profile updated", payload: updatedOccupant });
   } else {
-    res.send({ alertMsg: "No Updations found" });
+    res.status(404).send({ alertMsg: "No Updations found" });
   }
 });
 
 // get profile
 exports.getProfile = expressAsyncHandler(async (req, res) => {
   let occupant = await db.Occupants.findByPk(req.user.user_id);
-  res.send({ message: "Profile", payload: occupant });
+  res.status(200).send({ message: "Profile", payload: occupant });
 });
 
 exports.getBill = expressAsyncHandler(async (req, res) => {
@@ -226,6 +232,6 @@ exports.getBill = expressAsyncHandler(async (req, res) => {
       },
     },
   });
-  if (billRecord) res.send(billRecord);
-  else res.send({ alertMsg: "No billing found" });
+  if (billRecord) res.status(200).send(billRecord);
+  else res.status(404).send({ alertMsg: "No billing found" });
 });

@@ -48,7 +48,7 @@ const getFlatsDetails = expressAsyncHandler(async (req, res) => {
   let flats = await db.Flats.findAll({
     include: [{ model: db.Owners }, { model: db.Occupants }],
   });
-  res.json(flats);
+  res.status(200).send(flats);
 });
 
 // get vacant flats
@@ -57,7 +57,7 @@ const getVacantFlats = expressAsyncHandler(async (req, res) => {
     attributes: ["block", "flat_number"],
     where: { flat_status: 0 },
   });
-  res.send({ message: "Vacant flats", payload: flats });
+  res.status(200).send({ message: "Vacant flats", payload: flats });
 });
 
 // add flat
@@ -70,10 +70,10 @@ const addFlat = expressAsyncHandler(async (req, res) => {
     },
   });
   if (flat != null) {
-    res.status(400).send({ alertMsg: "flat already exists" });
+    res.status(409).send({ alertMsg: "flat already exists" });
   } else {
     let flat = await db.Flats.create(req.body);
-    res.send({ message: "Flat added successfully", payload: flat });
+    res.status(201).send({ message: "Flat added successfully", payload: flat });
   }
 });
 
@@ -87,17 +87,16 @@ const updateFlat = expressAsyncHandler(async (req, res) => {
   });
 
   if (updatedDetails) {
-    res.send({ message: "Flat details updated successfully" });
+    res.status(200).send({ message: "Flat details updated successfully" });
   } else {
     res
-      .status(400)
+      .status(500)
       .send({ alertMsg: "Something went wrong... updation failed" });
   }
 });
 // delete Flat
 
 const deleteFlat = expressAsyncHandler(async (req, res) => {
-  console.log("hhhhh");
   let deletedFlat = await db.Flats.destroy({
     where: {
       block: req.params.block,
@@ -105,7 +104,7 @@ const deleteFlat = expressAsyncHandler(async (req, res) => {
     },
   });
   if (deletedFlat) {
-    res.send({ message: "Flat deleted successfully" });
+    res.status(204).send({ message: "Flat deleted successfully" });
   } else {
     res.send({ alertMsg: "Something went wrong... flat deletion failed" });
   }
@@ -116,7 +115,7 @@ const getOwner = expressAsyncHandler(async (req, res) => {
   let owner = await db.Owners.findByPk(req.params.owner_id, {
     include: "Flats",
   });
-  res.send(owner);
+  res.status(200).send(owner);
 });
 
 // add owner
@@ -135,7 +134,9 @@ const addOwner = expressAsyncHandler(async (req, res) => {
       }
     );
   });
-  res.send({ message: "Owner added successfully", payload: newOwner });
+  res
+    .status(201)
+    .send({ message: "Owner added successfully", payload: newOwner });
 });
 
 // update change owner
@@ -146,17 +147,17 @@ const updateOwner = expressAsyncHandler(async (req, res) => {
       owner_id: req.params.owner_id,
     },
   });
+  if (updates) {
+    // get the updated owner details
+    let updatedOwner = await db.Owners.findByPk(req.params.owner_id);
 
-  // get the updated owner details
-  let updatedOwner = await db.Owners.findByPk(req.params.owner_id);
-  if (updations) {
-    res.send({
+    res.status(200).send({
       message: "Owner details updated successfully",
       payload: updatedOwner,
     });
   } else {
-    res.send({
-      alertMsg: "Something went wrong.... owner details updation failed",
+    res.status(404).send({
+      alertMsg: "no updations found",
     });
   }
 });
@@ -169,7 +170,7 @@ const deleteOwner = expressAsyncHandler(async (req, res) => {
     },
   });
   if (deletions) {
-    res.send({ message: "Owner deleted successfully" });
+    res.status(204).send({ message: "Owner deleted successfully" });
   } else {
     res.send({ alertMsg: "Something went wrong... owner deletion failed " });
   }
@@ -188,7 +189,7 @@ const changeOwner = expressAsyncHandler(async (req, res) => {
   );
 
   if (updations) {
-    res.send({ message: "owner changed successfully" });
+    res.status(200).send({ message: "owner changed successfully" });
   } else {
     res.send({ alertMsg: "Something went wrong..." });
   }
@@ -266,9 +267,9 @@ const getOccupant = expressAsyncHandler(async (req, res) => {
     },
     include: [db.Flats],
   });
-  if (occupant) res.send(occupant);
+  if (occupant) res.status(200).send(occupant);
   else {
-    res.send({ alertMsg: "No Occupant found" });
+    res.status(404).send({ alertMsg: "No Occupant found" });
   }
 });
 // update occupant
@@ -279,13 +280,14 @@ const updateOccupant = expressAsyncHandler(async (req, res) => {
       occupant_id: req.params.occupant_id,
     },
   });
-  console.log(updates);
   // get updated occupant details
   let updatedDetails = await db.Occupants.findByPk(req.params.occupant_id);
   if (updates) {
-    res.send({ message: "Updation successfull", payload: updatedDetails });
+    res
+      .status(200)
+      .send({ message: "Updation successfull", payload: updatedDetails });
   } else {
-    res.send({ alertMsg: "Something went wrong... updation failed" });
+    res.status(404).send({ alertMsg: "No updations found" });
   }
 });
 
@@ -314,10 +316,12 @@ const deleteOccupant = expressAsyncHandler(async (req, res) => {
       }
     );
     await t.commit();
-    res.send({ message: "Occupant removed successfully" });
+    res.status(204).send({ message: "Occupant removed successfully" });
   } catch (err) {
     await t.rollback();
-    res.send({ alertMsg: "Something went wrong... please try again" });
+    res
+      .status(500)
+      .send({ alertMsg: "Something went wrong... please try again" });
   }
 });
 
@@ -350,7 +354,9 @@ const addSecurityGuard = expressAsyncHandler(async (req, res) => {
   } catch (error) {
     console.log(error);
     await t.rollback();
-    res.send({ alertMsg: "Something went wrong.. Security guard not added" });
+    res
+      .status(500)
+      .send({ alertMsg: "Something went wrong.. Security guard not added" });
   }
 });
 
@@ -358,7 +364,7 @@ const addSecurityGuard = expressAsyncHandler(async (req, res) => {
 const getSecurity = expressAsyncHandler(async (req, res) => {
   let security = await db.Security_guard.findByPk(req.params.id);
   if (security) {
-    res.send({ message: "Security details", payload: security });
+    res.status(200).send({ message: "Security details", payload: security });
   } else {
     res.send({ alertMsg: `Security not found with id: ${req.params.id}` });
   }
@@ -372,9 +378,11 @@ const updateSecurity = expressAsyncHandler(async (req, res) => {
   if (updates) {
     // get updated details
     let updatedDetails = await db.Security_guard.findByPk(req.params.id);
-    res.send({ message: "Updation Successfull", payload: updatedDetails });
+    res
+      .status(200)
+      .send({ message: "Updation Successfull", payload: updatedDetails });
   } else {
-    res.send({ alertMsg: "No updations found" });
+    res.status(404).send({ alertMsg: "No updations found" });
   }
 });
 // remove security guard
@@ -384,7 +392,7 @@ const deleteSecurity = expressAsyncHandler(async (req, res) => {
     { where: { user_id: req.params.id, role: "security" } }
   );
   if (updates) {
-    res.send({ message: "Deletion successfull" });
+    res.status(204).send({ message: "Deletion successfull" });
   } else {
     res.send({ alertMsg: "Something went wrong... Deletion failed" });
   }
@@ -410,8 +418,13 @@ const getBill = expressAsyncHandler(async (req, res) => {
       },
     },
   });
-  if (billRecord) res.send(billRecord);
-  else res.send({ alertMsg: "No billing found" });
+  if (billRecord) res.status(200).send(billRecord);
+  else res.status(404).send({ alertMsg: "No billing found" });
+});
+
+const updateServiceCosts = expressAsyncHandler(async (req, res) => {
+  await db.Service_charges.update(req.body, { where: { id: true } });
+  res.status(200).send({ message: "Charges updated successfully" });
 });
 
 module.exports = {
@@ -434,4 +447,5 @@ module.exports = {
   updateSecurity,
   deleteSecurity,
   getBill,
+  updateServiceCosts,
 };

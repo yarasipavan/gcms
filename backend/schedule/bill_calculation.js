@@ -23,7 +23,6 @@ const billCalculation = async () => {
     await Promise.all(
       occupants.map(async (occupant) => {
         //  get the service details i.e start date and end data
-
         const charges = {};
 
         let serviceDetails = await db.Services.findOne({

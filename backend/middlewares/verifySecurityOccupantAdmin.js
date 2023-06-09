@@ -3,8 +3,8 @@ const jwt = require("jsonwebtoken");
 //configure dotenv
 require("dotenv").config();
 
-//funtion to veify the token and pass the flow
-exports.verifyAdmin = (req, res, next) => {
+//funtion to verify the token and pass the flow
+exports.verifySecurityOccupantAdmin = (req, res, next) => {
   //lets get the bearerToken from request headers
   let bearerToken = req.headers.authorization;
   // if bearer token in not existed, the user is not authorized
@@ -22,15 +22,12 @@ exports.verifyAdmin = (req, res, next) => {
           .status(401)
           .send({ alertMsg: "Session Expired please login again..." });
       } else {
-        if (decoded.user.role == "admin" && decoded.user.status) {
-          req.user = {
-            user_id: decoded.user.user_id,
-            email: decoded.user.username,
-          };
-          next();
-        } else {
-          res.status(401).send({ alertMsg: "You are not authorized user.." });
-        }
+        req.user = {
+          user_id: decoded.user.user_id,
+          email: decoded.user.username,
+          role: decoded.user.role,
+        };
+        next();
       }
     });
   }

@@ -4,7 +4,7 @@ const router = express.Router();
 
 // import middlewares
 const check_flat_vacant = require("../middlewares/check_flat_vacant");
-const { verifyToken } = require("../middlewares/verifyAdmin");
+const { verifyAdmin } = require("../middlewares/verifyAdmin");
 
 // body parser
 router.use(express.json());
@@ -30,76 +30,80 @@ const {
   updateSecurity,
   deleteSecurity,
   getBill,
+  updateServiceCosts,
   // sendMail,
 } = require("../controllers/admin.controllers");
 
 // routes
 
 // get flat details
-router.get("/flats-details", verifyToken, getFlatsDetails);
+router.get("/flats-details", verifyAdmin, getFlatsDetails);
 
 // get vacant flats
-router.get("/vacant-flats", verifyToken, getVacantFlats);
+router.get("/vacant-flats", verifyAdmin, getVacantFlats);
 
 // add flat
-router.post("/flat", verifyToken, addFlat);
+router.post("/flat", verifyAdmin, addFlat);
 
 // update flat
 router.put(
   "/flat/block/:block/flat_number/:flat_number",
-  verifyToken,
+  verifyAdmin,
   updateFlat
 );
 
 // delete flat
 router.delete(
   "/flat/block/:block/flat_number/:flat_number",
-  verifyToken,
+  verifyAdmin,
   deleteFlat
 );
 
 // get owner
-router.get("/owner/owner_id/:owner_id", verifyToken, getOwner);
+router.get("/owner/owner_id/:owner_id", verifyAdmin, getOwner);
 
 // add owner
-router.post("/owner", verifyToken, addOwner);
+router.post("/owner", verifyAdmin, addOwner);
 
 // update change owner
-router.put("/owner/owner_id/:owner_id", verifyToken, updateOwner);
+router.put("/owner/owner_id/:owner_id", verifyAdmin, updateOwner);
 
 // delete owner
-router.delete("/owner/owner_id/:owner_id", verifyToken, deleteOwner);
+router.delete("/owner/owner_id/:owner_id", verifyAdmin, deleteOwner);
 
 // change owner
-router.put("/changeOwner", verifyToken, changeOwner);
+router.put("/changeOwner", verifyAdmin, changeOwner);
 
 // add occupant
-router.post("/occupant", verifyToken, check_flat_vacant, addOccupant);
+router.post("/occupant", verifyAdmin, check_flat_vacant, addOccupant);
 
 // get occupant
-router.get("/occupant/:occupant_id", verifyToken, getOccupant);
+router.get("/occupant/:occupant_id", verifyAdmin, getOccupant);
 
 // update occupant
-router.put("/occupant/:occupant_id", verifyToken, updateOccupant);
+router.put("/occupant/:occupant_id", verifyAdmin, updateOccupant);
 // delete / remove occupant
-router.delete("/occupant/:occupant_id", verifyToken, deleteOccupant);
+router.delete("/occupant/:occupant_id", verifyAdmin, deleteOccupant);
 
 // add security guard
-router.post("/security", verifyToken, addSecurityGuard);
+router.post("/security", verifyAdmin, addSecurityGuard);
 
 // get security details
-router.get("/security/:id", verifyToken, getSecurity);
+router.get("/security/:id", verifyAdmin, getSecurity);
 
 // update security
-router.put("/security/:id", verifyToken, updateSecurity);
+router.put("/security/:id", verifyAdmin, updateSecurity);
 
 // delete security
-router.delete("/security/:id", verifyToken, deleteSecurity);
+router.delete("/security/:id", verifyAdmin, deleteSecurity);
+
+// update service costs
+router.put("/update-service-costs", verifyAdmin, updateServiceCosts);
 
 // get bill
 router.get(
   "/bill/occupant/:occupant_id/year/:year/month/:month",
-  verifyToken,
+  verifyAdmin,
   getBill
 );
 

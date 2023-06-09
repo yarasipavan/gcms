@@ -6,7 +6,7 @@ const router = express.Router();
 router.use(express.json());
 
 // import middlewares
-const { verifyToken } = require("../middlewares/verifyOccupant");
+const { verifyOccupant } = require("../middlewares/verifyOccupant");
 
 // import request handlers / constrollers
 const {
@@ -22,25 +22,25 @@ const {
 // routes
 
 // get using services
-router.get("/using-services", verifyToken, getUsingServices);
+router.get("/using-services", verifyOccupant, getUsingServices);
 
 // get not using services
-router.get("/not-using-services", verifyToken, getNotUsingServices);
+router.get("/not-using-services", verifyOccupant, getNotUsingServices);
 
 // add services
-router.post("/add-services", verifyToken, addServices);
+router.post("/add-services", verifyOccupant, addServices);
 
 // stop service
-router.delete("/stop-service", verifyToken, stopService);
+router.delete("/stop-service", verifyOccupant, stopService);
 
 // update profile
-router.put("/profile", verifyToken, updateProfile);
+router.put("/profile", verifyOccupant, updateProfile);
 
 // get profile
-router.get("/profile", verifyToken, getProfile);
+router.get("/profile", verifyOccupant, getProfile);
 
 // get bill
-router.get("/bill/year/:year/month/:month", verifyToken, getBill);
+router.get("/bill/year/:year/month/:month", verifyOccupant, getBill);
 
 // export router
 module.exports = router;

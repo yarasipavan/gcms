@@ -135,8 +135,8 @@ POST http://localhost:3030/login
 Content-Type: application/json
 
 {
-  "username":"occupant101.dummy@abc.com",
-  "password":"mTj1#!&M"
+  "username":"admin.dummy@gcms.com",
+  "password":"admin@12"
 }
 
 ### get using sercices of occupant
@@ -189,3 +189,86 @@ Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyN
 ### get bill -admin user
 GET  http://localhost:3030/admin/bill/occupant/40/year/2023/month/5
 Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMywidXNlcl9pZCI6MTAwMSwidXNlcm5hbWUiOiJhZG1pbiIsInBhc3N3b3JkIjoiJDJhJDA1JEV6bjZ6LnNiTkVEZVZTTDh5WERKUC5MMmZoWDZIbkFraGJmS0xSUldXVFJGdlU2Y1JHZFI2Iiwic3RhdHVzIjp0cnVlLCJyb2xlIjoiYWRtaW4ifSwiaWF0IjoxNjg2MjAwMDc0LCJleHAiOjE2ODY4MDQ4NzR9.43Hkt1kcirpe52v14fe-TlFvsfDlrvxlbx1QJ7y__6w
+
+###
+GET http://localhost:3030/security/flat-details
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMSwidXNlcl9pZCI6MywidXNlcm5hbWUiOiJzZWN1cml0eS5kdW1teUBnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYSQwNSRkVzdZV251ZkFYSzdDNTh1a3FONWhlSlVaL2F2Mm5pQ04vQk1sUlguY2NDRHRtMFhMSm5NMiIsInN0YXR1cyI6dHJ1ZSwicm9sZSI6InNlY3VyaXR5In0sImlhdCI6MTY4NjI5MDI3NiwiZXhwIjoxNjg2ODk1MDc2fQ.Pa3izAP1yTNrFJWx42jbojmkMko4qm_ny-Rm_ONFk_A
+
+### add visitor record
+POST http://localhost:3030/security/visitor-record
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMSwidXNlcl9pZCI6MywidXNlcm5hbWUiOiJzZWN1cml0eS5kdW1teUBnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYSQwNSRkVzdZV251ZkFYSzdDNTh1a3FONWhlSlVaL2F2Mm5pQ04vQk1sUlguY2NDRHRtMFhMSm5NMiIsInN0YXR1cyI6dHJ1ZSwicm9sZSI6InNlY3VyaXR5In0sImlhdCI6MTY4NjI5MDI3NiwiZXhwIjoxNjg2ODk1MDc2fQ.Pa3izAP1yTNrFJWx42jbojmkMko4qm_ny-Rm_ONFk_A
+Content-Type: application/json
+
+{
+  "visitor_name":"visitor",
+  "visitor_aadhar":99887766554433,
+  "visiting_to":49,
+  "purpose":"relatives"
+}
+
+### get not vacated visitors record
+GET http://localhost:3030/security/not-vacated-visitors-record
+Authorization:bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMSwidXNlcl9pZCI6MywidXNlcm5hbWUiOiJzZWN1cml0eS5kdW1teUBnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYSQwNSRkVzdZV251ZkFYSzdDNTh1a3FONWhlSlVaL2F2Mm5pQ04vQk1sUlguY2NDRHRtMFhMSm5NMiIsInN0YXR1cyI6dHJ1ZSwicm9sZSI6InNlY3VyaXR5In0sImlhdCI6MTY4NjI5MDI3NiwiZXhwIjoxNjg2ODk1MDc2fQ.Pa3izAP1yTNrFJWx42jbojmkMko4qm_ny-Rm_ONFk_A
+
+### nore return time
+PUT http://localhost:3030/security/return/visitor_id/1
+Authorization:bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMSwidXNlcl9pZCI6MywidXNlcm5hbWUiOiJzZWN1cml0eS5kdW1teUBnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYSQwNSRkVzdZV251ZkFYSzdDNTh1a3FONWhlSlVaL2F2Mm5pQ04vQk1sUlguY2NDRHRtMFhMSm5NMiIsInN0YXR1cyI6dHJ1ZSwicm9sZSI6InNlY3VyaXR5In0sImlhdCI6MTY4NjI5MDI3NiwiZXhwIjoxNjg2ODk1MDc2fQ.Pa3izAP1yTNrFJWx42jbojmkMko4qm_ny-Rm_ONFk_A
+
+### update visitor record
+PUT http://localhost:3030/security/update-visitor-record/visitor_id/1
+Authorization:bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMSwidXNlcl9pZCI6MywidXNlcm5hbWUiOiJzZWN1cml0eS5kdW1teUBnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYSQwNSRkVzdZV251ZkFYSzdDNTh1a3FONWhlSlVaL2F2Mm5pQ04vQk1sUlguY2NDRHRtMFhMSm5NMiIsInN0YXR1cyI6dHJ1ZSwicm9sZSI6InNlY3VyaXR5In0sImlhdCI6MTY4NjI5MDI3NiwiZXhwIjoxNjg2ODk1MDc2fQ.Pa3izAP1yTNrFJWx42jbojmkMko4qm_ny-Rm_ONFk_A
+Content-Type: application/json
+
+{
+  "visitor_name":"updated"
+}
+
+### get all visitors record
+GET http://localhost:3030/security/visitors-record
+Authorization:bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMSwidXNlcl9pZCI6MywidXNlcm5hbWUiOiJzZWN1cml0eS5kdW1teUBnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYSQwNSRkVzdZV251ZkFYSzdDNTh1a3FONWhlSlVaL2F2Mm5pQ04vQk1sUlguY2NDRHRtMFhMSm5NMiIsInN0YXR1cyI6dHJ1ZSwicm9sZSI6InNlY3VyaXR5In0sImlhdCI6MTY4NjI5MDI3NiwiZXhwIjoxNjg2ODk1MDc2fQ.Pa3izAP1yTNrFJWx42jbojmkMko4qm_ny-Rm_ONFk_A
+
+### get visitors record on particular time
+POST http://localhost:3030/security/visitors-record-on-time
+Authorization:bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMywidXNlcl9pZCI6MTAwMSwidXNlcm5hbWUiOiJhZG1pbiIsInBhc3N3b3JkIjoiJDJhJDA1JEV6bjZ6LnNiTkVEZVZTTDh5WERKUC5MMmZoWDZIbkFraGJmS0xSUldXVFJGdlU2Y1JHZFI2Iiwic3RhdHVzIjp0cnVlLCJyb2xlIjoiYWRtaW4ifSwiaWF0IjoxNjg2MjAwMDc0LCJleHAiOjE2ODY4MDQ4NzR9.43Hkt1kcirpe52v14fe-TlFvsfDlrvxlbx1QJ7y__6w
+Content-Type: application/json
+
+{
+  "start_time":"Fri Jun 09 2023 09:36:02 GMT+0530",
+  "end_time":"Fri Jun 09 2023 13:37:02 GMT+0530"
+}
+
+### change password
+POST http://localhost:3030/change-password
+Authorization:bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMywidXNlcl9pZCI6MTAwMSwidXNlcm5hbWUiOiJhZG1pbi5kdW1teUBnY21zLmNvbSIsInBhc3N3b3JkIjoiJDJhJDA1JFdlOFQuZWFwa2l6VG1GeFdUT0VSdmV0YkZKWmlkTjlXUmR0SDgzTkdVRGdPMzJkR0ZwaE4uIiwic3RhdHVzIjp0cnVlLCJyb2xlIjoiYWRtaW4iLCJyZXNldF90b2tlbiI6ImV5SmhiR2NpT2lKSVV6STFOaUlzSW5SNWNDSTZJa3BYVkNKOS5leUoxYzJWeWJtRnRaU0k2SW1Ga2JXbHVMbVIxYlcxNVFHZGpiWE11WTI5dElpd2lhV0YwSWpveE5qZzJNekE0TVRRMkxDSmxlSEFpT2pFMk9EWXpNRGczTkRaOS5weE80MTR1UjB0NFY1c0ZYRGZLTFRUUFpSRFJleWI4MHBaN3FmcjZEN1lVIn0sImlhdCI6MTY4NjMwODIxMCwiZXhwIjoxNjg2OTEzMDEwfQ.NQBl3BeLdqMNM65F5BfEjfDKT6sdACkQ1xoBVL3LF-Q
+Content-Type: application/json
+
+{
+  "old_password":"admin@12",
+  "new_password":"admin@123"
+}
+
+### forgot password link
+POST http://localhost:3030/forgot-password
+Content-Type: application/json
+
+{
+  "username":"admin.dummy@gcms.com"
+}
+
+### reset password 
+POST http://localhost:3030/reset-password
+Content-Type: application/json
+
+{
+  "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluLmR1bW15QGdjbXMuY29tIiwiaWF0IjoxNjg2MzA3OTMzLCJleHAiOjE2ODYzMDg1MzN9.y3u_ey5p9TLH_EeQD3gmS15ziPGxUIQaMOk1yFZapwY",
+  "password":"admin@12"
+}
+
+### 
+PUT http://localhost:3030/admin/update-service-costs
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMywidXNlcl9pZCI6MTAwMSwidXNlcm5hbWUiOiJhZG1pbiIsInBhc3N3b3JkIjoiJDJhJDA1JEV6bjZ6LnNiTkVEZVZTTDh5WERKUC5MMmZoWDZIbkFraGJmS0xSUldXVFJGdlU2Y1JHZFI2Iiwic3RhdHVzIjp0cnVlLCJyb2xlIjoiYWRtaW4ifSwiaWF0IjoxNjg2MjAwMDc0LCJleHAiOjE2ODY4MDQ4NzR9.43Hkt1kcirpe52v14fe-TlFvsfDlrvxlbx1QJ7y__6w 
+Content-Type: application/json
+
+{
+  "swimming_pool":1000
+}
