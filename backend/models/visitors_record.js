@@ -18,11 +18,11 @@ module.exports = (sequelize, DataTypes) => {
   }
   Visitors_record.init(
     {
-      visitor_name: DataTypes.STRING,
-      visitor_aadhar: DataTypes.BIGINT,
+      visitor_name: { type: DataTypes.STRING, allowNull: false },
+      visitor_aadhar: { type: DataTypes.BIGINT, allowNull: false },
       visiting_to: { type: DataTypes.INTEGER },
-      purpose: DataTypes.TEXT,
-      visited_at: DataTypes.DATE,
+      purpose: { type: DataTypes.TEXT, allowNull: false },
+      visited_at: { type: DataTypes.DATE, allowNull: false },
       returned_at: DataTypes.DATE,
       authorized_by: { type: DataTypes.INTEGER, allowNull: false },
     },
@@ -30,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: "Visitors_record",
       timestamps: false,
+      freezeTableName: true,
     }
   );
   return Visitors_record;

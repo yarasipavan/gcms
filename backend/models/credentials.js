@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       password: { type: DataTypes.STRING, allowNull: false },
       status: { type: DataTypes.BOOLEAN, defaultValue: true, allowNull: false },
       role: { type: DataTypes.STRING, allowNull: false },
+      reset_token: { type: DataTypes.STRING },
     },
     {
       sequelize,

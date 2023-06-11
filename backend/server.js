@@ -1,13 +1,17 @@
 // /create express application
 const express = require("express");
 const app = express();
+const cors = require("cors");
+app.use(cors());
 // import modules
 const adminRoute = require("./routes/admin.routes");
 const publicRoute = require("./routes/public.routes");
 const occupantRoute = require("./routes/occupant.route");
+const securityGuardRoute = require("./routes/security_guard.route");
 
 // import schedules
 const billSchedule = require("./schedule/bill.schedule");
+
 //  configure dotenv
 require("dotenv").config();
 
@@ -21,6 +25,7 @@ app.listen(port, () => {
 app.use("/", publicRoute);
 app.use("/admin", adminRoute);
 app.use("/occupant", occupantRoute);
+app.use("/security", securityGuardRoute);
 
 // schedule
 // ----------------------
