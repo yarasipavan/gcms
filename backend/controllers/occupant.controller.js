@@ -201,7 +201,7 @@ exports.updateProfile = expressAsyncHandler(async (req, res) => {
       .status(200)
       .send({ message: "Profile updated", payload: updatedOccupant });
   } else {
-    res.status(404).send({ alertMsg: "No Updations found" });
+    res.status(200).send({ alertMsg: "No Updations found" });
   }
 });
 
@@ -233,5 +233,5 @@ exports.getBill = expressAsyncHandler(async (req, res) => {
     },
   });
   if (billRecord) res.status(200).send(billRecord);
-  else res.status(404).send({ alertMsg: "No billing found" });
+  else res.status(200).send({ alertMsg: "No billing found" });
 });

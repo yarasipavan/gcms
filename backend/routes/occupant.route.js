@@ -7,6 +7,11 @@ router.use(express.json());
 
 // import middlewares
 const { verifyOccupant } = require("../middlewares/verifyOccupant");
+const {
+  addServicesJoi,
+  deleteServiceJoi,
+  updateProfileJoi,
+} = require("../middlewares/occupant.joi");
 
 // import request handlers / constrollers
 const {
@@ -28,13 +33,13 @@ router.get("/using-services", verifyOccupant, getUsingServices);
 router.get("/not-using-services", verifyOccupant, getNotUsingServices);
 
 // add services
-router.post("/add-services", verifyOccupant, addServices);
+router.post("/add-services", addServicesJoi, verifyOccupant, addServices);
 
 // stop service
-router.delete("/stop-service", verifyOccupant, stopService);
+router.put("/stop-service", deleteServiceJoi, verifyOccupant, stopService);
 
 // update profile
-router.put("/profile", verifyOccupant, updateProfile);
+router.put("/profile", updateProfileJoi, verifyOccupant, updateProfile);
 
 // get profile
 router.get("/profile", verifyOccupant, getProfile);

@@ -7,6 +7,13 @@ const {
   verifySecurityOccupantAdmin,
 } = require("../middlewares/verifySecurityOccupantAdmin");
 
+const {
+  loginJoi,
+  changePasswordJoi,
+  forgotPasswordLinkJoi,
+  resetPasswordJoi,
+} = require("../middlewares/public_route.joi");
+
 // request handlers
 const {
   login,
@@ -18,15 +25,20 @@ const {
 // body-parser
 router.use(express.json());
 
-router.post("/login", login);
+router.post("/login", loginJoi, login);
 
 // change password
-router.post("/change-password", verifySecurityOccupantAdmin, changePassword);
+router.post(
+  "/change-password",
+  changePasswordJoi,
+  verifySecurityOccupantAdmin,
+  changePassword
+);
 
 // forgot password link
-router.post("/forgot-password", forgotPasswordLink);
+router.post("/forgot-password", forgotPasswordLinkJoi, forgotPasswordLink);
 
 // reset password
-router.post("/reset-password", resetPassword);
+router.post("/reset-password", resetPasswordJoi, resetPassword);
 // export router
 module.exports = router;

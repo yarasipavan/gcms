@@ -12,6 +12,7 @@ exports.login = expressAsyncHandler(async (req, res) => {
   let user = await db.Credentials.findOne({
     where: { username: username },
     order: [["user_id", "desc"]],
+    attributes: { exclude: ["reset_token", "id"] },
   });
 
   if (user) {
@@ -26,7 +27,7 @@ exports.login = expressAsyncHandler(async (req, res) => {
       if (await bcryptjs.compare(password, user.password)) {
         // generate jwt
 
-        delete user.password;
+        delete user.dataValues.password;
         let token = jwt.sign({ user: user }, process.env.TOKEN_SECRET_KEY, {
           expiresIn: "7d",
         });

@@ -8,10 +8,11 @@ Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyM
 ### add flat
 POST http://localhost:3030/admin/flat
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMywidXNlcl9pZCI6MTAwMSwidXNlcm5hbWUiOiJhZG1pbiIsInBhc3N3b3JkIjoiJDJhJDA1JEV6bjZ6LnNiTkVEZVZTTDh5WERKUC5MMmZoWDZIbkFraGJmS0xSUldXVFJGdlU2Y1JHZFI2Iiwic3RhdHVzIjp0cnVlLCJyb2xlIjoiYWRtaW4ifSwiaWF0IjoxNjg2MjAwMDc0LCJleHAiOjE2ODY4MDQ4NzR9.43Hkt1kcirpe52v14fe-TlFvsfDlrvxlbx1QJ7y__6w 
 
 {
-  "block":"B",
-  "flat_number":102
+  "block":"C",
+  "flat_number":101
 }
 
 ### update flat details
@@ -23,15 +24,18 @@ Content-Type: application/json
   "flat_number":103
 }
 
-### delete flat 
-DELETE http://localhost:3030/admin/flat/block/A/flat_number/103
 
 ###get owner details
 GET http://localhost:3030/admin/owner/owner_id/2
 
+###
+GET http://localhost:3030/admin/owners
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMywidXNlcl9pZCI6MTAwMSwidXNlcm5hbWUiOiJhZG1pbiIsInBhc3N3b3JkIjoiJDJhJDA1JEV6bjZ6LnNiTkVEZVZTTDh5WERKUC5MMmZoWDZIbkFraGJmS0xSUldXVFJGdlU2Y1JHZFI2Iiwic3RhdHVzIjp0cnVlLCJyb2xlIjoiYWRtaW4ifSwiaWF0IjoxNjg2MjAwMDc0LCJleHAiOjE2ODY4MDQ4NzR9.43Hkt1kcirpe52v14fe-TlFvsfDlrvxlbx1QJ7y__6w 
+
 ### add owner
 POST http://localhost:3030/admin/owner
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMywidXNlcl9pZCI6MTAwMSwidXNlcm5hbWUiOiJhZG1pbiIsInBhc3N3b3JkIjoiJDJhJDA1JEV6bjZ6LnNiTkVEZVZTTDh5WERKUC5MMmZoWDZIbkFraGJmS0xSUldXVFJGdlU2Y1JHZFI2Iiwic3RhdHVzIjp0cnVlLCJyb2xlIjoiYWRtaW4ifSwiaWF0IjoxNjg2MjAwMDc0LCJleHAiOjE2ODY4MDQ4NzR9.43Hkt1kcirpe52v14fe-TlFvsfDlrvxlbx1QJ7y__6w 
 
 {
   "name":"testing",
@@ -40,37 +44,30 @@ Content-Type: application/json
   "Flats":[
     {
       "block":"A",
-      "flat_number":103
-    },
-    {
-      "block":"B",
       "flat_number":101
-    },
-    {
-      "block":"B",
-      "flat_number":102
     }
+    
   ]
 }
 
 ### update owner
 PUT http://localhost:3030/admin/owner/owner_id/13
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMywidXNlcl9pZCI6MTAwMSwidXNlcm5hbWUiOiJhZG1pbiIsInBhc3N3b3JkIjoiJDJhJDA1JEV6bjZ6LnNiTkVEZVZTTDh5WERKUC5MMmZoWDZIbkFraGJmS0xSUldXVFJGdlU2Y1JHZFI2Iiwic3RhdHVzIjp0cnVlLCJyb2xlIjoiYWRtaW4ifSwiaWF0IjoxNjg2MjAwMDc0LCJleHAiOjE2ODY4MDQ4NzR9.43Hkt1kcirpe52v14fe-TlFvsfDlrvxlbx1QJ7y__6w 
 
 {
   "name":"vishnu",
   "email":"vishnu@gmail.com"
 }
 
-### delete owner
-DELETE http://localhost:3030/admin/owner/owner_id/2
 
 ### change owner 
 PUT http://localhost:3030/admin/changeOwner
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMywidXNlcl9pZCI6MTAwMSwidXNlcm5hbWUiOiJhZG1pbiIsInBhc3N3b3JkIjoiJDJhJDA1JEV6bjZ6LnNiTkVEZVZTTDh5WERKUC5MMmZoWDZIbkFraGJmS0xSUldXVFJGdlU2Y1JHZFI2Iiwic3RhdHVzIjp0cnVlLCJyb2xlIjoiYWRtaW4ifSwiaWF0IjoxNjg2MjAwMDc0LCJleHAiOjE2ODY4MDQ4NzR9.43Hkt1kcirpe52v14fe-TlFvsfDlrvxlbx1QJ7y__6w 
 
 {
-  "owner_id":13,
+  "owner_id":18,
   "block":"A",
   "flat_number":103
 }
@@ -86,13 +83,21 @@ Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyM
   "phone":1122334499,
   "flat":{
     "block":"A",
-    "flat_number":101,
+    "flat_number":103,
     "ownership":"tenant"
   }
 }
 
 ### get occupant details
 GET http://localhost:3030/admin/occupant/6
+
+### get all occupants
+GET http://localhost:3030/admin/occupants
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMywidXNlcl9pZCI6MTAwMSwidXNlcm5hbWUiOiJhZG1pbiIsInBhc3N3b3JkIjoiJDJhJDA1JEV6bjZ6LnNiTkVEZVZTTDh5WERKUC5MMmZoWDZIbkFraGJmS0xSUldXVFJGdlU2Y1JHZFI2Iiwic3RhdHVzIjp0cnVlLCJyb2xlIjoiYWRtaW4ifSwiaWF0IjoxNjg2MjAwMDc0LCJleHAiOjE2ODY4MDQ4NzR9.43Hkt1kcirpe52v14fe-TlFvsfDlrvxlbx1QJ7y__6w
+
+### get overall occupants
+GET http://localhost:3030/admin/overall-occupants 
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMywidXNlcl9pZCI6MTAwMSwidXNlcm5hbWUiOiJhZG1pbiIsInBhc3N3b3JkIjoiJDJhJDA1JEV6bjZ6LnNiTkVEZVZTTDh5WERKUC5MMmZoWDZIbkFraGJmS0xSUldXVFJGdlU2Y1JHZFI2Iiwic3RhdHVzIjp0cnVlLCJyb2xlIjoiYWRtaW4ifSwiaWF0IjoxNjg2MjAwMDc0LCJleHAiOjE2ODY4MDQ4NzR9.43Hkt1kcirpe52v14fe-TlFvsfDlrvxlbx1QJ7y__6w
 
 ### update occupant
 PUT http://localhost:3030/admin/occupant/6
@@ -104,7 +109,6 @@ Content-Type: application/json
 
 ### delete occupant
 DELETE http://localhost:3030/admin/occupant/48
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMywidXNlcl9pZCI6MTAwMSwidXNlcm5hbWUiOiJhZG1pbiIsInBhc3N3b3JkIjoiJDJhJDA1JEV6bjZ6LnNiTkVEZVZTTDh5WERKUC5MMmZoWDZIbkFraGJmS0xSUldXVFJGdlU2Y1JHZFI2Iiwic3RhdHVzIjp0cnVlLCJyb2xlIjoiYWRtaW4ifSwiaWF0IjoxNjg2MjAwMDc0LCJleHAiOjE2ODY4MDQ4NzR9.43Hkt1kcirpe52v14fe-TlFvsfDlrvxlbx1QJ7y__6w 
 
 ### add security guard
 POST http://localhost:3030/admin/security
@@ -119,12 +123,16 @@ Content-Type: application/json
 ### get security details
 GET http://localhost:3030/admin/security/1
 
+###
+GET http://localhost:3030/admin/all-security
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMywidXNlcl9pZCI6MTAwMSwidXNlcm5hbWUiOiJhZG1pbiIsInBhc3N3b3JkIjoiJDJhJDA1JEV6bjZ6LnNiTkVEZVZTTDh5WERKUC5MMmZoWDZIbkFraGJmS0xSUldXVFJGdlU2Y1JHZFI2Iiwic3RhdHVzIjp0cnVlLCJyb2xlIjoiYWRtaW4ifSwiaWF0IjoxNjg2MjAwMDc0LCJleHAiOjE2ODY4MDQ4NzR9.43Hkt1kcirpe52v14fe-TlFvsfDlrvxlbx1QJ7y__6w
+
 ### update security
 PUT http://localhost:3030/admin/security/1 
 Content-Type: application/json
 
 {
-  "name":"security updated"
+  "phone":9
 }
 
 ### delete security
@@ -136,7 +144,7 @@ Content-Type: application/json
 
 {
   "username":"admin.dummy@gcms.com",
-  "password":"admin@12"
+  "password":"admin@123"
 }
 
 ### get using sercices of occupant
@@ -152,16 +160,16 @@ Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyN
 
 ### add services
 POST http://localhost:3030/occupant/add-services
-Authorization:bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyOCwidXNlcl9pZCI6NTAsInVzZXJuYW1lIjoib2NjdXBhbnQxMDIuZHVtbXlAYWJjLmNvbSIsInBhc3N3b3JkIjoiJDJhJDA1JGxWUU1YVElFQlFZVW5zTUNtUWRLNS5TeDRUS0E4YlMvYVVFY2VDandDS1FENDRUbjBIZEs2Iiwic3RhdHVzIjp0cnVlLCJyb2xlIjoib2NjdXBhbnQifSwiaWF0IjoxNjg2MjI3NTY2LCJleHAiOjE2ODY4MzIzNjZ9.dxvjwY_oEbJPG7ec3i-_Bfyoc1w_1mAFo91dB6kK7aY
+Authorization:bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJfaWQiOjU0LCJ1c2VybmFtZSI6InBhdmFudGVzdGluZy5kdW1tdEBnbWFpbC5jb20iLCJzdGF0dXMiOnRydWUsInJvbGUiOiJvY2N1cGFudCJ9LCJpYXQiOjE2ODY0NTI1OTksImV4cCI6MTY4NzA1NzM5OX0.jyr5egIhsINqiaAcPuIywJ6YoM_52KFrBwfFJ5S6Ikc
 Content-Type: application/json
 
 {
-  "services":["swimming_pool","gym"]
+  "services":["gym"]
 }
 
 ### stop services
-DELETE  http://localhost:3030/occupant/stop-service
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyOCwidXNlcl9pZCI6NTAsInVzZXJuYW1lIjoib2NjdXBhbnQxMDIuZHVtbXlAYWJjLmNvbSIsInBhc3N3b3JkIjoiJDJhJDA1JGxWUU1YVElFQlFZVW5zTUNtUWRLNS5TeDRUS0E4YlMvYVVFY2VDandDS1FENDRUbjBIZEs2Iiwic3RhdHVzIjp0cnVlLCJyb2xlIjoib2NjdXBhbnQifSwiaWF0IjoxNjg2MjI3NTY2LCJleHAiOjE2ODY4MzIzNjZ9.dxvjwY_oEbJPG7ec3i-_Bfyoc1w_1mAFo91dB6kK7aY
+PUT  http://localhost:3030/occupant/stop-service
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyNCwidXNlcl9pZCI6NDYsInVzZXJuYW1lIjoib2NjdXBhbnQuZHVtbXlAYWJjLmNvbSIsInBhc3N3b3JkIjoiJDJhJDA1JDY3c2RvNDdxWURlbzkzTUZvL3RTUnVxc0V5eEdGM2ZTLlVZN1pRdXhPR3F1MkM3WHFaMU1HIiwic3RhdHVzIjp0cnVlLCJyb2xlIjoib2NjdXBhbnQifSwiaWF0IjoxNjg2MjA1Njc4LCJleHAiOjE2ODY4MTA0Nzh9.mf9qM9yLlOv6u5-FnAh7XxiYS7iZuoWVG1G2N29uFm0
 Content-Type: application/json
 
 {
@@ -184,7 +192,7 @@ Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyN
 
 ### get bill
 GET  http://localhost:3030/occupant/bill/year/2023/month/5
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyNywidXNlcl9pZCI6NDksInVzZXJuYW1lIjoib2NjdXBhbnQxMDEuZHVtbXlAYWJjLmNvbSIsInBhc3N3b3JkIjoiJDJhJDA1JGplMGlTclBJMDRWL05aYTQ1UDdhQXVlbWoxWTR3TC84Li5ZckM4YjVoY2cuNGkwMnl0ZXpXIiwic3RhdHVzIjp0cnVlLCJyb2xlIjoib2NjdXBhbnQifSwiaWF0IjoxNjg2Mjg2MTc5LCJleHAiOjE2ODY4OTA5Nzl9.Zyfyvc3tH_D_eBQ9mO-6MWL5-WrUtph_OBzF-MjJccw
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJfaWQiOjUwLCJ1c2VybmFtZSI6Im9jY3VwYW50MTAyLmR1bW15QGFiYy5jb20iLCJzdGF0dXMiOnRydWUsInJvbGUiOiJvY2N1cGFudCJ9LCJpYXQiOjE2ODY0NjM0MTAsImV4cCI6MTY4NzA2ODIxMH0.GArwNOMFj83M3oqDlItx38yer3KWrvLV7n4te8Mqafs
 
 ### get bill -admin user
 GET  http://localhost:3030/admin/bill/occupant/40/year/2023/month/5
@@ -210,13 +218,12 @@ Content-Type: application/json
 GET http://localhost:3030/security/not-vacated-visitors-record
 Authorization:bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMSwidXNlcl9pZCI6MywidXNlcm5hbWUiOiJzZWN1cml0eS5kdW1teUBnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYSQwNSRkVzdZV251ZkFYSzdDNTh1a3FONWhlSlVaL2F2Mm5pQ04vQk1sUlguY2NDRHRtMFhMSm5NMiIsInN0YXR1cyI6dHJ1ZSwicm9sZSI6InNlY3VyaXR5In0sImlhdCI6MTY4NjI5MDI3NiwiZXhwIjoxNjg2ODk1MDc2fQ.Pa3izAP1yTNrFJWx42jbojmkMko4qm_ny-Rm_ONFk_A
 
-### nore return time
+### note return time
 PUT http://localhost:3030/security/return/visitor_id/1
 Authorization:bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMSwidXNlcl9pZCI6MywidXNlcm5hbWUiOiJzZWN1cml0eS5kdW1teUBnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYSQwNSRkVzdZV251ZkFYSzdDNTh1a3FONWhlSlVaL2F2Mm5pQ04vQk1sUlguY2NDRHRtMFhMSm5NMiIsInN0YXR1cyI6dHJ1ZSwicm9sZSI6InNlY3VyaXR5In0sImlhdCI6MTY4NjI5MDI3NiwiZXhwIjoxNjg2ODk1MDc2fQ.Pa3izAP1yTNrFJWx42jbojmkMko4qm_ny-Rm_ONFk_A
 
 ### update visitor record
 PUT http://localhost:3030/security/update-visitor-record/visitor_id/1
-Authorization:bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMSwidXNlcl9pZCI6MywidXNlcm5hbWUiOiJzZWN1cml0eS5kdW1teUBnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYSQwNSRkVzdZV251ZkFYSzdDNTh1a3FONWhlSlVaL2F2Mm5pQ04vQk1sUlguY2NDRHRtMFhMSm5NMiIsInN0YXR1cyI6dHJ1ZSwicm9sZSI6InNlY3VyaXR5In0sImlhdCI6MTY4NjI5MDI3NiwiZXhwIjoxNjg2ODk1MDc2fQ.Pa3izAP1yTNrFJWx42jbojmkMko4qm_ny-Rm_ONFk_A
 Content-Type: application/json
 
 {
@@ -239,7 +246,6 @@ Content-Type: application/json
 
 ### change password
 POST http://localhost:3030/change-password
-Authorization:bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMywidXNlcl9pZCI6MTAwMSwidXNlcm5hbWUiOiJhZG1pbi5kdW1teUBnY21zLmNvbSIsInBhc3N3b3JkIjoiJDJhJDA1JFdlOFQuZWFwa2l6VG1GeFdUT0VSdmV0YkZKWmlkTjlXUmR0SDgzTkdVRGdPMzJkR0ZwaE4uIiwic3RhdHVzIjp0cnVlLCJyb2xlIjoiYWRtaW4iLCJyZXNldF90b2tlbiI6ImV5SmhiR2NpT2lKSVV6STFOaUlzSW5SNWNDSTZJa3BYVkNKOS5leUoxYzJWeWJtRnRaU0k2SW1Ga2JXbHVMbVIxYlcxNVFHZGpiWE11WTI5dElpd2lhV0YwSWpveE5qZzJNekE0TVRRMkxDSmxlSEFpT2pFMk9EWXpNRGczTkRaOS5weE80MTR1UjB0NFY1c0ZYRGZLTFRUUFpSRFJleWI4MHBaN3FmcjZEN1lVIn0sImlhdCI6MTY4NjMwODIxMCwiZXhwIjoxNjg2OTEzMDEwfQ.NQBl3BeLdqMNM65F5BfEjfDKT6sdACkQ1xoBVL3LF-Q
 Content-Type: application/json
 
 {
@@ -252,7 +258,7 @@ POST http://localhost:3030/forgot-password
 Content-Type: application/json
 
 {
-  "username":"admin.dummy@gcms.com"
+  "username":"occupant102.dummy@abc.com"
 }
 
 ### reset password 
@@ -260,15 +266,24 @@ POST http://localhost:3030/reset-password
 Content-Type: application/json
 
 {
-  "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluLmR1bW15QGdjbXMuY29tIiwiaWF0IjoxNjg2MzA3OTMzLCJleHAiOjE2ODYzMDg1MzN9.y3u_ey5p9TLH_EeQD3gmS15ziPGxUIQaMOk1yFZapwY",
-  "password":"admin@12"
+  "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im9jY3VwYW50MTAyLmR1bW15QGFiYy5jb20iLCJpYXQiOjE2ODY0NjMyOTQsImV4cCI6MTY4NjQ2Mzg5NH0.1GYbnw6sBCoguW0PWWGK-UT_Mok_6O_hU7zZQFtxUXs",
+  "password":"occupant"
 }
 
 ### 
 PUT http://localhost:3030/admin/update-service-costs
+Content-Type: application/json
+
+{
+  "gym":1000
+}
+
+###send mail to all occupants
+POSt http://localhost:3030/admin/mail-to-occupants
 Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMywidXNlcl9pZCI6MTAwMSwidXNlcm5hbWUiOiJhZG1pbiIsInBhc3N3b3JkIjoiJDJhJDA1JEV6bjZ6LnNiTkVEZVZTTDh5WERKUC5MMmZoWDZIbkFraGJmS0xSUldXVFJGdlU2Y1JHZFI2Iiwic3RhdHVzIjp0cnVlLCJyb2xlIjoiYWRtaW4ifSwiaWF0IjoxNjg2MjAwMDc0LCJleHAiOjE2ODY4MDQ4NzR9.43Hkt1kcirpe52v14fe-TlFvsfDlrvxlbx1QJ7y__6w 
 Content-Type: application/json
 
 {
-  "swimming_pool":1000
+  "subject":"testing bulk emails|Gated Community Management System",
+  "text":"Hey , Good evening.. This is test email for all occupants"
 }

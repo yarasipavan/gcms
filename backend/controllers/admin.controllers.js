@@ -4,6 +4,7 @@ const { Sequelize } = require("sequelize");
 const expressAsyncHandler = require("express-async-handler");
 const bcryptjs = require("bcryptjs");
 const { transporter } = require("../custom_modules/transporter");
+const { request } = require("express");
 
 // methods
 // method to generate password
@@ -22,7 +23,6 @@ const generatePassword = () => {
 
 //  method to send the credentails to mail
 const sendCredentials = async (email, password) => {
-  console.log("email in send :", email);
   var mailOptions = {
     from: "Admin",
     to: email,
@@ -72,7 +72,12 @@ const addFlat = expressAsyncHandler(async (req, res) => {
   if (flat != null) {
     res.status(409).send({ alertMsg: "flat already exists" });
   } else {
-    let flat = await db.Flats.create(req.body);
+    let updated = await db.Flats.create(req.body);
+    // get the latest details
+    let flat = await db.Flats.findOne({
+      include: [{ model: db.Owners }, { model: db.Occupants }],
+      where: { block: updated.block, flat_number: updated.flat_number },
+    });
     res.status(201).send({ message: "Flat added successfully", payload: flat });
   }
 });
@@ -87,7 +92,14 @@ const updateFlat = expressAsyncHandler(async (req, res) => {
   });
 
   if (updatedDetails) {
-    res.status(200).send({ message: "Flat details updated successfully" });
+    // get the updated flat details
+    let flat = await db.Flats.findOne({
+      include: [{ model: db.Owners }, { model: db.Occupants }],
+      where: { block: req.body.block, flat_number: req.body.flat_number },
+    });
+    res
+      .status(200)
+      .send({ message: "Flat details updated successfully", payload: flat });
   } else {
     res
       .status(500)
@@ -104,7 +116,7 @@ const deleteFlat = expressAsyncHandler(async (req, res) => {
     },
   });
   if (deletedFlat) {
-    res.status(204).send({ message: "Flat deleted successfully" });
+    res.status(200).send({ message: "Flat deleted successfully" });
   } else {
     res.send({ alertMsg: "Something went wrong... flat deletion failed" });
   }
@@ -116,6 +128,12 @@ const getOwner = expressAsyncHandler(async (req, res) => {
     include: "Flats",
   });
   res.status(200).send(owner);
+});
+
+// get all owners
+const getAllOwners = expressAsyncHandler(async (req, res) => {
+  let owners = await db.Owners.findAll();
+  res.send(owners);
 });
 
 // add owner
@@ -141,13 +159,14 @@ const addOwner = expressAsyncHandler(async (req, res) => {
 
 // update change owner
 const updateOwner = expressAsyncHandler(async (req, res) => {
+  console.log(req.params.owner_id);
   // update the details
   let [updations] = await db.Owners.update(req.body, {
     where: {
       owner_id: req.params.owner_id,
     },
   });
-  if (updates) {
+  if (updations) {
     // get the updated owner details
     let updatedOwner = await db.Owners.findByPk(req.params.owner_id);
 
@@ -156,25 +175,25 @@ const updateOwner = expressAsyncHandler(async (req, res) => {
       payload: updatedOwner,
     });
   } else {
-    res.status(404).send({
+    res.status(200).send({
       alertMsg: "no updations found",
     });
   }
 });
 
 // delete owner
-const deleteOwner = expressAsyncHandler(async (req, res) => {
-  let deletions = await db.Owners.destroy({
-    where: {
-      owner_id: req.params.owner_id,
-    },
-  });
-  if (deletions) {
-    res.status(204).send({ message: "Owner deleted successfully" });
-  } else {
-    res.send({ alertMsg: "Something went wrong... owner deletion failed " });
-  }
-});
+// const deleteOwner = expressAsyncHandler(async (req, res) => {
+//   let deletions = await db.Owners.destroy({
+//     where: {
+//       owner_id: req.params.owner_id,
+//     },
+//   });
+//   if (deletions) {
+//     res.status(200).send({ message: "Owner deleted successfully" });
+//   } else {
+//     res.send({ alertMsg: "Something went wrong... owner deletion failed " });
+//   }
+// });
 
 // change owner
 const changeOwner = expressAsyncHandler(async (req, res) => {
@@ -272,6 +291,22 @@ const getOccupant = expressAsyncHandler(async (req, res) => {
     res.status(404).send({ alertMsg: "No Occupant found" });
   }
 });
+
+// get all occupants
+const getAllOccupants = expressAsyncHandler(async (req, res) => {
+  let occupants = await db.Flats.findAll({
+    where: {
+      occupant_id: { [Sequelize.Op.not]: null },
+    },
+    include: [db.Occupants],
+  });
+  res.status(200).send(occupants);
+});
+
+const getOverallOccupants = expressAsyncHandler(async (req, res) => {
+  let occupants = await db.Occupants.findAll();
+  res.send(occupants);
+});
 // update occupant
 const updateOccupant = expressAsyncHandler(async (req, res) => {
   console.log(req.params.occupant_id);
@@ -316,7 +351,7 @@ const deleteOccupant = expressAsyncHandler(async (req, res) => {
       }
     );
     await t.commit();
-    res.status(204).send({ message: "Occupant removed successfully" });
+    res.status(200).send({ message: "Occupant removed successfully" });
   } catch (err) {
     await t.rollback();
     res
@@ -350,7 +385,9 @@ const addSecurityGuard = expressAsyncHandler(async (req, res) => {
     await sendCredentials(security.email, password);
 
     await t.commit();
-    res.status(201).send({ message: "security added successfully" });
+    res
+      .status(201)
+      .send({ message: "security added successfully", payload: security });
   } catch (error) {
     console.log(error);
     await t.rollback();
@@ -368,6 +405,20 @@ const getSecurity = expressAsyncHandler(async (req, res) => {
   } else {
     res.send({ alertMsg: `Security not found with id: ${req.params.id}` });
   }
+});
+
+// get all security
+const getAllSecurity = expressAsyncHandler(async (req, res) => {
+  // get all security id whose are active
+  let records = await db.Credentials.findAll({
+    where: { role: "security", status: true },
+  });
+  let ids = records.map((record) => record.user_id);
+
+  let security = await db.Security_guard.findAll({
+    where: { id: { [Sequelize.Op.in]: ids } },
+  });
+  res.send(security);
 });
 // update securty guard
 const updateSecurity = expressAsyncHandler(async (req, res) => {
@@ -392,7 +443,7 @@ const deleteSecurity = expressAsyncHandler(async (req, res) => {
     { where: { user_id: req.params.id, role: "security" } }
   );
   if (updates) {
-    res.status(204).send({ message: "Deletion successfull" });
+    res.status(200).send({ message: "Deletion successfull" });
   } else {
     res.send({ alertMsg: "Something went wrong... Deletion failed" });
   }
@@ -427,25 +478,57 @@ const updateServiceCosts = expressAsyncHandler(async (req, res) => {
   res.status(200).send({ message: "Charges updated successfully" });
 });
 
+// send mail to all occupants
+const sendMailToOccupants = expressAsyncHandler(async (req, res) => {
+  let { subject, text } = req.body;
+  // get the emails of all current occupants
+  let emails = await db.Credentials.findAll({
+    where: { role: "occupant", status: true },
+    attributes: ["username"],
+  });
+  let emailArray = emails.map((credentials) => {
+    return credentials.username;
+  });
+  console.log(emailArray);
+  var mailOptions = {
+    from: "Admin",
+    to: emailArray,
+    subject: subject,
+    text: text,
+  };
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+      res.status(500).send({ alertMsg: "Something Went wrong" });
+    } else {
+      res.send({ message: "Mails sent " });
+    }
+  });
+});
+
 module.exports = {
   getFlatsDetails,
   addFlat,
   updateFlat,
   deleteFlat,
   getOwner,
+  getAllOwners,
   addOwner,
   updateOwner,
-  deleteOwner,
   changeOwner,
   addOccupant,
   getOccupant,
+  getAllOccupants,
+  getOverallOccupants,
   updateOccupant,
   deleteOccupant,
   getVacantFlats,
   addSecurityGuard,
   getSecurity,
+  getAllSecurity,
   updateSecurity,
   deleteSecurity,
   getBill,
   updateServiceCosts,
+  sendMailToOccupants,
 };

@@ -1,6 +1,8 @@
 // /create express application
 const express = require("express");
 const app = express();
+const cors = require("cors");
+app.use(cors());
 // import modules
 const adminRoute = require("./routes/admin.routes");
 const publicRoute = require("./routes/public.routes");
