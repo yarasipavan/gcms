@@ -1,7 +1,7 @@
 {
   "development": {
     "username": "root",
-    "password": "Pavan@123",
+    "password": ******db password***,
     "database": "gcms",
     "host": "127.0.0.1",
     "dialect": "mysql",
