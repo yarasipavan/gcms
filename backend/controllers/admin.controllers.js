@@ -216,65 +216,75 @@ const changeOwner = expressAsyncHandler(async (req, res) => {
 
 // add occupant
 const addOccupant = expressAsyncHandler(async (req, res) => {
-  // if occupied_from is not found then add today's date
-  if (!req.body.occupied_from) {
-    req.body.occupied_from = new Date();
-  }
-
-  const t = await db.sequelize.transaction();
-  try {
-    // create occupant
-    let occupant = await db.Occupants.create(req.body, { transaction: t });
-
-    let updatesInFlats = {
-      occupant_id: occupant.occupant_id,
-      ownership: req.body.flat.ownership,
-      flat_status: true,
-    };
-    if (updatesInFlats["ownership"] == "tenant") {
-      if (req.body.flat.rent) {
-        updatesInFlats.rent = req.body.flat.rent;
-      }
-    } else {
-      updatesInFlats.rent = 0;
+  // check email is already existed
+  let record = await db.Credentials.findOne({
+    where: { username: req.body.email, status: true },
+  });
+  if (record) {
+    res.status(400).send({
+      alertMsg: "Email already registered and in use.. try again with new one",
+    });
+  } else {
+    // if occupied_from is not found then add today's date
+    if (!req.body.occupied_from) {
+      req.body.occupied_from = new Date();
     }
 
-    await db.Flats.update(updatesInFlats, {
-      where: {
-        block: req.body.flat.block,
-        flat_number: req.body.flat.flat_number,
-      },
-      transaction: t,
-    });
+    const t = await db.sequelize.transaction();
+    try {
+      // create occupant
+      let occupant = await db.Occupants.create(req.body, { transaction: t });
 
-    // add occupant id in services;
-    await db.Services.create(
-      { occupant_id: occupant.occupant_id },
-      { transaction: t }
-    );
+      let updatesInFlats = {
+        occupant_id: occupant.occupant_id,
+        ownership: req.body.flat.ownership,
+        flat_status: true,
+      };
+      if (updatesInFlats["ownership"] == "tenant") {
+        if (req.body.flat.rent) {
+          updatesInFlats.rent = req.body.flat.rent;
+        }
+      } else {
+        updatesInFlats.rent = 0;
+      }
 
-    // generate credentails
-    let password = generatePassword();
-    let hashedPassword = await bcryptjs.hash(password, 5);
-    let credentials = await db.Credentials.create(
-      {
-        username: req.body.email,
-        password: hashedPassword,
-        role: "occupant",
-        user_id: occupant.dataValues.occupant_id,
-      },
-      { transaction: t }
-    );
+      await db.Flats.update(updatesInFlats, {
+        where: {
+          block: req.body.flat.block,
+          flat_number: req.body.flat.flat_number,
+        },
+        transaction: t,
+      });
 
-    // send credenatial to mail
-    await sendCredentials(credentials.username, password);
+      // add occupant id in services;
+      await db.Services.create(
+        { occupant_id: occupant.occupant_id },
+        { transaction: t }
+      );
 
-    await t.commit();
-    res.send({ message: "Ocuppant added succesfully", payload: occupant });
-  } catch (err) {
-    console.log(err);
-    await t.rollback();
-    res.send({ alertMsg: "Something went wrong... occupant not added" });
+      // generate credentails
+      let password = generatePassword();
+      let hashedPassword = await bcryptjs.hash(password, 5);
+      let credentials = await db.Credentials.create(
+        {
+          username: req.body.email,
+          password: hashedPassword,
+          role: "occupant",
+          user_id: occupant.dataValues.occupant_id,
+        },
+        { transaction: t }
+      );
+
+      // send credenatial to mail
+      await sendCredentials(credentials.username, password);
+
+      await t.commit();
+      res.send({ message: "Ocuppant added succesfully", payload: occupant });
+    } catch (err) {
+      console.log(err);
+      await t.rollback();
+      res.send({ alertMsg: "Something went wrong... occupant not added" });
+    }
   }
 });
 
@@ -362,38 +372,50 @@ const deleteOccupant = expressAsyncHandler(async (req, res) => {
 
 // add security guard
 const addSecurityGuard = expressAsyncHandler(async (req, res) => {
-  const t = await db.sequelize.transaction();
-  try {
-    // add security guard details in security_guard
-    let security = await db.Security_guard.create(req.body, { transaction: t });
+  // check email is already existed
+  let record = await db.Credentials.findOne({
+    where: { username: req.body.email, status: true },
+  });
+  if (record) {
+    res.status(400).send({
+      alertMsg: "Email already registered and in use.. try again with new one",
+    });
+  } else {
+    const t = await db.sequelize.transaction();
+    try {
+      // add security guard details in security_guard
+      let security = await db.Security_guard.create(req.body, {
+        transaction: t,
+      });
 
-    // generate credentials and insert in credentails table
-    let password = generatePassword();
-    let hashedPassword = await bcryptjs.hash(password, 5);
+      // generate credentials and insert in credentails table
+      let password = generatePassword();
+      let hashedPassword = await bcryptjs.hash(password, 5);
 
-    await db.Credentials.create(
-      {
-        user_id: security.id,
-        username: security.email,
-        password: hashedPassword,
-        role: "security",
-      },
-      { transaction: t }
-    );
+      await db.Credentials.create(
+        {
+          user_id: security.id,
+          username: security.email,
+          password: hashedPassword,
+          role: "security",
+        },
+        { transaction: t }
+      );
 
-    // send mail the credentials
-    await sendCredentials(security.email, password);
+      // send mail the credentials
+      await sendCredentials(security.email, password);
 
-    await t.commit();
-    res
-      .status(201)
-      .send({ message: "security added successfully", payload: security });
-  } catch (error) {
-    console.log(error);
-    await t.rollback();
-    res
-      .status(500)
-      .send({ alertMsg: "Something went wrong.. Security guard not added" });
+      await t.commit();
+      res
+        .status(201)
+        .send({ message: "security added successfully", payload: security });
+    } catch (error) {
+      console.log(error);
+      await t.rollback();
+      res
+        .status(500)
+        .send({ alertMsg: "Something went wrong.. Security guard not added" });
+    }
   }
 });
 

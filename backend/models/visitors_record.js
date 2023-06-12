@@ -11,20 +11,35 @@ module.exports = (sequelize, DataTypes) => {
       Visitors_record.belongsTo(models.Security_guard, {
         foreignKey: { name: "authorized_by", allowNull: false },
       });
-      Visitors_record.belongsTo(models.Occupants, {
-        foreignKey: { name: "visiting_to" },
-      });
     }
   }
   Visitors_record.init(
     {
       visitor_name: { type: DataTypes.STRING, allowNull: false },
       visitor_aadhar: { type: DataTypes.BIGINT, allowNull: false },
-      visiting_to: { type: DataTypes.INTEGER },
+      block: {
+        type: DataTypes.STRING,
+        references: {
+          model: "flats",
+          key: "block",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
+      flat_number: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: "flats",
+          key: "flat_number",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
       purpose: { type: DataTypes.TEXT, allowNull: false },
       visited_at: { type: DataTypes.DATE, allowNull: false },
       returned_at: DataTypes.DATE,
       authorized_by: { type: DataTypes.INTEGER, allowNull: false },
+      phone: { type: DataTypes.INTEGER, allowNull: false },
     },
     {
       sequelize,

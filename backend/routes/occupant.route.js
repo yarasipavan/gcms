@@ -6,7 +6,7 @@ const router = express.Router();
 router.use(express.json());
 
 // import middlewares
-const { verifyOccupant } = require("../middlewares/verifyOccupant");
+const { verify } = require("../middlewares/verify");
 const {
   addServicesJoi,
   deleteServiceJoi,
@@ -27,25 +27,30 @@ const {
 // routes
 
 // get using services
-router.get("/using-services", verifyOccupant, getUsingServices);
+router.get("/using-services", verify(["occupant"]), getUsingServices);
 
 // get not using services
-router.get("/not-using-services", verifyOccupant, getNotUsingServices);
+router.get("/not-using-services", verify(["occupant"]), getNotUsingServices);
 
 // add services
-router.post("/add-services", addServicesJoi, verifyOccupant, addServices);
+router.post("/add-services", verify(["occupant"]), addServicesJoi, addServices);
 
 // stop service
-router.put("/stop-service", deleteServiceJoi, verifyOccupant, stopService);
+router.put(
+  "/stop-service",
+  verify(["occupant"]),
+  deleteServiceJoi,
+  stopService
+);
 
 // update profile
-router.put("/profile", updateProfileJoi, verifyOccupant, updateProfile);
+router.put("/profile", verify(["occupant"]), updateProfileJoi, updateProfile);
 
 // get profile
-router.get("/profile", verifyOccupant, getProfile);
+router.get("/profile", verify(["occupant"]), getProfile);
 
 // get bill
-router.get("/bill/year/:year/month/:month", verifyOccupant, getBill);
+router.get("/bill/year/:year/month/:month", verify(["occupant"]), getBill);
 
 // export router
 module.exports = router;

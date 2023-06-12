@@ -122,7 +122,7 @@ exports.stopService = expressAsyncHandler(async (req, res) => {
       start_date = firstOfMonth;
     }
 
-    no_of_days = Math.floor((end_date - start_date) / (1000 * 60 * 60 * 24));
+    no_of_days = Math.ceil((end_date - start_date) / (1000 * 60 * 60 * 24));
 
     // get the cast of the service from service charges
 
@@ -207,7 +207,9 @@ exports.updateProfile = expressAsyncHandler(async (req, res) => {
 
 // get profile
 exports.getProfile = expressAsyncHandler(async (req, res) => {
-  let occupant = await db.Occupants.findByPk(req.user.user_id);
+  let occupant = await db.Occupants.findByPk(req.user.user_id, {
+    include: [{ model: db.Flats, include: [{ model: db.Owners }] }],
+  });
   res.status(200).send({ message: "Profile", payload: occupant });
 });
 

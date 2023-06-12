@@ -3,10 +3,11 @@ const express = require("express");
 const router = express.Router();
 
 // import middileware and mudules
-const { verifySecurity } = require("../middlewares/verify_security_guard");
-const {
-  verifySecurityOrAdmin,
-} = require("../middlewares/verifySecurityOrAdmin");
+// const { verifySecurity } = require("../middlewares/verify_security_guard");
+const { verify } = require("../middlewares/verify");
+// const {
+//   verifySecurityOrAdmin,
+// } = require("../middlewares/verifySecurityOrAdmin");
 
 const {
   addVisitorJoi,
@@ -30,15 +31,20 @@ const {
 router.use(express.json());
 
 // routes
-router.get("/flat-details", verifySecurity, getFlatDetails);
+router.get("/flat-details", verify(["security"]), getFlatDetails);
 
 // add visitor record
-router.post("/visitor-record", addVisitorJoi, verifySecurity, addVisitorRecord);
+router.post(
+  "/visitor-record",
+  verify(["security"]),
+  addVisitorJoi,
+  addVisitorRecord
+);
 
 // get the visitors record who are not vacated yet
 router.get(
   "/not-vacated-visitors-record",
-  verifySecurityOrAdmin,
+  verify(["security", "admin"]),
   getNotVacatedVisitorsRecords
 );
 
@@ -46,7 +52,7 @@ router.get(
 router.put(
   "/return/visitor_id/:id",
   returnTimeJoi,
-  verifySecurity,
+  verify(["security"]),
   visitorReturned
 );
 
@@ -54,18 +60,22 @@ router.put(
 router.put(
   "/update-visitor-record/visitor_id/:id",
   updateVisitorsRecordJoi,
-  verifySecurity,
+  verify(["security"]),
   updateVisitorRecord
 );
 
 // get all visitors record
-router.get("/visitors-record", verifySecurityOrAdmin, getAllVisitorsRecord);
+router.get(
+  "/visitors-record",
+  verify(["security", "admin"]),
+  getAllVisitorsRecord
+);
 
 // get visitor recored on particular time
 router.post(
   "/visitors-record-on-time",
   getVisitorsRecordOnTimeJoi,
-  verifySecurityOrAdmin,
+  verify(["security", "admin"]),
   getVisitorsRecordOnParticularTime
 );
 // export router

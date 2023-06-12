@@ -1,14 +1,14 @@
 const Joi = require("joi");
-const { join } = require("path");
-const { json } = require("sequelize");
 
 // add visitor
 const addVisitorSchema = Joi.object().keys({
   visitor_name: Joi.string().required(),
   visitor_aadhar: Joi.number().required(),
-  visiting_to: Joi.number(),
+  block: Joi.string(),
+  flat_number: Joi.number(),
   purpose: Joi.string().required(),
   visited_at: Joi.date(),
+  phone: Joi.number().required(),
 });
 
 exports.addVisitorJoi = (req, res, next) => {
@@ -35,8 +35,10 @@ exports.returnTimeJoi = (req, res, next) => {
 const updateVisitorsRecordBodySchema = Joi.object().keys({
   visitor_name: Joi.string(),
   visitor_aadhar: Joi.number(),
-  visiting_to: Joi.number(),
+  block: Joi.string(),
+  flat_number: Joi.number(),
   purpose: Joi.string(),
+  phone: Joi.number(),
 });
 const updateVisitorsRecordParamsSchema = Joi.object().keys({
   id: Joi.number().required(),
@@ -65,6 +67,7 @@ const getVisitorsRecordOnTimeSchema = Joi.object().keys({
   end_time: Joi.date(),
 });
 exports.getVisitorsRecordOnTimeJoi = (req, res, next) => {
+  console.log(req.body);
   const { error } = getVisitorsRecordOnTimeSchema.validate(req.body);
   if (!error) {
     next();

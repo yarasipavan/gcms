@@ -12,7 +12,7 @@ exports.login = expressAsyncHandler(async (req, res) => {
   let user = await db.Credentials.findOne({
     where: { username: username },
     order: [["user_id", "desc"]],
-    attributes: { exclude: ["reset_token", "id"] },
+    attributes: { exclude: ["reset_token"] },
   });
 
   if (user) {
@@ -115,7 +115,7 @@ exports.forgotPasswordLink = expressAsyncHandler(async (req, res) => {
     );
     if (updates) {
       //send mail
-      const resetLink = `${process.env.CLIENT_URL}/reset-password?token=${user.reset_token}`;
+      const resetLink = `${process.env.RESET_PASSWAORD_URL}?token=${user.reset_token}`;
       const mailOptions = {
         from: "Admin",
         to: req.body.username,
@@ -139,7 +139,7 @@ exports.forgotPasswordLink = expressAsyncHandler(async (req, res) => {
       res.status(500).send({ alertMsg: "something went wrong... " });
     }
   } else {
-    res.status(200).send({
+    res.status(400).send({
       alertMsg:
         "This Email is not found. Your account may be removed or invalid email address",
     });
