@@ -1,6 +1,9 @@
 const db = require("../models/index");
 const expressAsyncHandler = require("express-async-handler");
 const { Sequelize } = require("sequelize");
+const stripe = require("stripe")(
+  "sk_test_51NJBl1SEVR2detSq9YU5EzohfN3BbUb5m6mmkXBDqm0NM7OSrwo5LLyyxFwMoowesWQp4BChGBVDSR1J4FR5lCgE005t9YPdCw"
+);
 
 // get using services;
 exports.getUsingServices = expressAsyncHandler(async (req, res) => {

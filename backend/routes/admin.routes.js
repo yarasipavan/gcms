@@ -49,6 +49,9 @@ const {
   getBill,
   updateServiceCosts,
   sendMailToOccupants,
+  dashboard,
+  getMonthlyBillSum,
+  getServices,
 } = require("../controllers/admin.controllers");
 
 // routes
@@ -177,4 +180,12 @@ router.post(
   sendMailsJoi,
   sendMailToOccupants
 );
+
+// get services
+router.get("/services", verify(["admin"]), getServices);
+
+//get billdata
+router.get("/billData", verify(["admin"]), getMonthlyBillSum);
+
+router.get("/dashboard", verify(["admin"]), dashboard);
 module.exports = router;

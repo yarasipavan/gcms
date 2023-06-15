@@ -5,9 +5,12 @@ const addFlatSchema = Joi.object().keys({
 });
 
 const addOwnerSchema = Joi.object().keys({
-  name: Joi.string().required(),
-  email: Joi.string().required(),
-  phone: Joi.number().required(),
+  name: Joi.string()
+    .required()
+    .min(3)
+    .message("Name must contain atleast 3 characters"),
+  email: Joi.string().required().email(),
+  phone: Joi.number().required().min(1000000000).max(9999999999),
   Flats: Joi.array().items(
     Joi.object().keys({
       block: Joi.string().required(),
@@ -17,9 +20,9 @@ const addOwnerSchema = Joi.object().keys({
 });
 
 const updateOwnerDetailsSchema = Joi.object().keys({
-  name: Joi.string(),
-  email: Joi.string(),
-  phone: Joi.number(),
+  name: Joi.string().min(3).message("Name must contain atleast 3 characters"),
+  email: Joi.string().email(),
+  phone: Joi.number().min(1000000000).max(9999999999),
 });
 
 exports.addFlatMiddleware = (req, res, next) => {
@@ -50,7 +53,7 @@ exports.updateOwnerDetailsMiddleware = (req, res, next) => {
 };
 
 const changeOwnerSchema = Joi.object().keys({
-  owner_id: Joi.number().required(),
+  owner_id: Joi.number().required().min(1),
   block: Joi.string().required(),
   flat_number: Joi.number().required(),
 });
@@ -85,7 +88,9 @@ exports.addOccupantJoi = (req, res, next) => {
 };
 
 const updateOccupantSchema = Joi.object().keys({
-  occupant_name: Joi.string(),
+  occupant_name: Joi.string()
+    .min(3)
+    .message("Name must contain atleast 3 characters"),
   email: Joi.string(),
   phone: Joi.number(),
   occupied_from: Joi.date(),
@@ -101,7 +106,7 @@ exports.updateOccupantJoi = (req, res, next) => {
 };
 
 const removeOccupantSchema = Joi.object().keys({
-  occupant_id: Joi.number().required(),
+  occupant_id: Joi.number().required().min(1),
 });
 
 exports.removeOccupantJoi = (req, res, next) => {
@@ -115,9 +120,12 @@ exports.removeOccupantJoi = (req, res, next) => {
 
 // add security guard
 const addSecurityGuardSchema = Joi.object().keys({
-  name: Joi.string().required(),
-  email: Joi.string().required(),
-  phone: Joi.number().required(),
+  name: Joi.string()
+    .required()
+    .min(3)
+    .message("Name must contain atleast 3 characters"),
+  email: Joi.string().required().email(),
+  phone: Joi.number().required().min(1000000000).max(9999999999),
 });
 
 exports.addSecurityGuardJoi = (req, res, next) => {
@@ -130,9 +138,9 @@ exports.addSecurityGuardJoi = (req, res, next) => {
 };
 
 const updateSecurityGuardSchema = Joi.object().keys({
-  name: Joi.string(),
-  email: Joi.string(),
-  phone: Joi.number(),
+  name: Joi.string().min(3).message("Name must contain atleast 3 characters"),
+  email: Joi.string().email(),
+  phone: Joi.number().min(1000000000).max(9999999999),
 });
 exports.updateSecurityGuardJoi = (req, res, next) => {
   const { error } = updateSecurityGuardSchema.validate(req.body);
@@ -145,7 +153,7 @@ exports.updateSecurityGuardJoi = (req, res, next) => {
 
 // delet security
 const deleteSecurityGuardSchema = Joi.object().keys({
-  id: Joi.number().required(),
+  id: Joi.number().required().min(1),
 });
 
 exports.deleteSecurityGuardJoi = (req, res, next) => {
@@ -158,17 +166,17 @@ exports.deleteSecurityGuardJoi = (req, res, next) => {
 };
 
 const updateServiceChargesSchema = Joi.object().keys({
-  swimming_pool: Joi.number(),
-  house_keeping: Joi.number(),
-  parking: Joi.number(),
-  park: Joi.number(),
-  gym: Joi.number(),
-  indoor_auditorium: Joi.number(),
-  security: Joi.number(),
-  maintenance: Joi.number(),
-  gardening: Joi.number(),
-  charity: Joi.number(),
-  community: Joi.number(),
+  swimming_pool: Joi.number().min(0),
+  house_keeping: Joi.number().min(0),
+  parking: Joi.number().min(0),
+  park: Joi.number().min(0),
+  gym: Joi.number().min(0),
+  indoor_auditorium: Joi.number().min(0),
+  security: Joi.number().min(0),
+  maintenance: Joi.number().min(0),
+  gardening: Joi.number().min(0),
+  charity: Joi.number().min(0),
+  community: Joi.number().min(0),
 });
 exports.updateServiceChargesJoi = (req, res, next) => {
   const { error } = updateServiceChargesSchema.validate(req.body);
@@ -181,9 +189,9 @@ exports.updateServiceChargesJoi = (req, res, next) => {
 
 // get bill
 const getBillSchema = Joi.object().keys({
-  occupant_id: Joi.number().required(),
-  year: Joi.number().required(),
-  month: Joi.number().required(),
+  occupant_id: Joi.number().required().min(1),
+  year: Joi.number().required().min(2022),
+  month: Joi.number().required().min(1).max(12),
 });
 
 exports.getBillJoi = (req, res, next) => {

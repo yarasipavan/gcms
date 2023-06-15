@@ -115,7 +115,7 @@ exports.forgotPasswordLink = expressAsyncHandler(async (req, res) => {
     );
     if (updates) {
       //send mail
-      const resetLink = `${process.env.RESET_PASSWAORD_URL}?token=${user.reset_token}`;
+      const resetLink = `${process.env.RESET_PASSWAORD_URL}?token=${reset_token}`;
       const mailOptions = {
         from: "Admin",
         to: req.body.username,

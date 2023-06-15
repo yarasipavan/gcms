@@ -1,6 +1,13 @@
 GET http://localhost:3030/admin/flats-details
 Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMywidXNlcl9pZCI6MTAwMSwidXNlcm5hbWUiOiJhZG1pbi5kdW1teUBnY21zLmNvbSIsInN0YXR1cyI6dHJ1ZSwicm9sZSI6ImFkbWluIn0sImlhdCI6MTY4NjU4ODg4MywiZXhwIjoxNjg3MTkzNjgzfQ.8WkC1MrjK1fc5LN3Nj9u9iIxpo3AEpGlD5Gg5khwcEs 
 
+### get services
+GET http://localhost:3030/admin/services
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMywidXNlcl9pZCI6MTAwMSwidXNlcm5hbWUiOiJhZG1pbi5kdW1teUBnY21zLmNvbSIsInN0YXR1cyI6dHJ1ZSwicm9sZSI6ImFkbWluIn0sImlhdCI6MTY4NjU4ODg4MywiZXhwIjoxNjg3MTkzNjgzfQ.8WkC1MrjK1fc5LN3Nj9u9iIxpo3AEpGlD5Gg5khwcEs
+
+### dashboard
+GET  http://localhost:3030/admin/dashboard
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMywidXNlcl9pZCI6MTAwMSwidXNlcm5hbWUiOiJhZG1pbi5kdW1teUBnY21zLmNvbSIsInN0YXR1cyI6dHJ1ZSwicm9sZSI6ImFkbWluIn0sImlhdCI6MTY4NjU4ODg4MywiZXhwIjoxNjg3MTkzNjgzfQ.8WkC1MrjK1fc5LN3Nj9u9iIxpo3AEpGlD5Gg5khwcEs
 ### get vacant flats
 GET http://localhost:3030/admin/vacant-flats
 Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMywidXNlcl9pZCI6MTAwMSwidXNlcm5hbWUiOiJhZG1pbi5kdW1teUBnY21zLmNvbSIsInN0YXR1cyI6dHJ1ZSwicm9sZSI6ImFkbWluIn0sImlhdCI6MTY4NjU4ODg4MywiZXhwIjoxNjg3MTkzNjgzfQ.8WkC1MrjK1fc5LN3Nj9u9iIxpo3AEpGlD5Gg5khwcEs
@@ -112,7 +119,7 @@ Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyM
 }
 
 ### delete occupant
-DELETE http://localhost:3030/admin/occupant/50
+DELETE http://localhost:3030/admin/occupant/54
 Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMywidXNlcl9pZCI6MTAwMSwidXNlcm5hbWUiOiJhZG1pbiIsInBhc3N3b3JkIjoiJDJhJDA1JEV6bjZ6LnNiTkVEZVZTTDh5WERKUC5MMmZoWDZIbkFraGJmS0xSUldXVFJGdlU2Y1JHZFI2Iiwic3RhdHVzIjp0cnVlLCJyb2xlIjoiYWRtaW4ifSwiaWF0IjoxNjg2MjAwMDc0LCJleHAiOjE2ODY4MDQ4NzR9.43Hkt1kcirpe52v14fe-TlFvsfDlrvxlbx1QJ7y__6w 
 
 ### add security guard
@@ -217,10 +224,10 @@ Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyM
 Content-Type: application/json
 
 {
-  "visitor_name":"visitor",
+  "visitor_name":"visitorfds",
   "visitor_aadhar":99887766554433,
   "purpose":"relatives",
-  "phone":9632587410
+  "phone":9632587
 }
 
 ### get not vacated visitors record
@@ -284,6 +291,7 @@ Content-Type: application/json
 ### 
 PUT http://localhost:3030/admin/update-service-costs
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMywidXNlcl9pZCI6MTAwMSwidXNlcm5hbWUiOiJhZG1pbiIsInBhc3N3b3JkIjoiJDJhJDA1JEV6bjZ6LnNiTkVEZVZTTDh5WERKUC5MMmZoWDZIbkFraGJmS0xSUldXVFJGdlU2Y1JHZFI2Iiwic3RhdHVzIjp0cnVlLCJyb2xlIjoiYWRtaW4ifSwiaWF0IjoxNjg2MjAwMDc0LCJleHAiOjE2ODY4MDQ4NzR9.43Hkt1kcirpe52v14fe-TlFvsfDlrvxlbx1QJ7y__6w
 
 {
   "gym":1000
@@ -298,3 +306,10 @@ Content-Type: application/json
   "subject":"testing bulk emails|Gated Community Management System",
   "text":"Hey , Good evening.. This is test email for all occupants"
 }
+
+###
+GEt http://localhost:3030/send
+
+###
+GET http://localhost:3030/admin/billData
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoyMywidXNlcl9pZCI6MTAwMSwidXNlcm5hbWUiOiJhZG1pbiIsInBhc3N3b3JkIjoiJDJhJDA1JEV6bjZ6LnNiTkVEZVZTTDh5WERKUC5MMmZoWDZIbkFraGJmS0xSUldXVFJGdlU2Y1JHZFI2Iiwic3RhdHVzIjp0cnVlLCJyb2xlIjoiYWRtaW4ifSwiaWF0IjoxNjg2MjAwMDc0LCJleHAiOjE2ODY4MDQ4NzR9.43Hkt1kcirpe52v14fe-TlFvsfDlrvxlbx1QJ7y__6w 
