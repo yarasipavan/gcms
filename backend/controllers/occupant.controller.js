@@ -1,9 +1,8 @@
 const db = require("../models/index");
 const expressAsyncHandler = require("express-async-handler");
 const { Sequelize } = require("sequelize");
-const stripe = require("stripe")(
-  "sk_test_51NJBl1SEVR2detSq9YU5EzohfN3BbUb5m6mmkXBDqm0NM7OSrwo5LLyyxFwMoowesWQp4BChGBVDSR1J4FR5lCgE005t9YPdCw"
-);
+require("dotenv").config();
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 // get using services;
 exports.getUsingServices = expressAsyncHandler(async (req, res) => {
@@ -239,4 +238,70 @@ exports.getBill = expressAsyncHandler(async (req, res) => {
   });
   if (billRecord) res.status(200).send(billRecord);
   else res.status(200).send({ alertMsg: "No billing found" });
+});
+
+// create payment session
+exports.createPaymentSession = expressAsyncHandler(async (req, res) => {
+  try {
+    let bill_id = req.params.bill_id;
+    // get the bill detais
+    let bill_details = await db.Bills.findByPk(bill_id);
+    if (!bill_details) res.status(400).send({ alertMsg: "Invalid Bill Id" });
+    if (!bill_details.total_bill) {
+      res.status(400).send({ alertMsg: "bill is not calculated" });
+    } else if (bill_details.bill_status) {
+      res.status(400).send({ alertMsg: "Bill already paid" });
+    } else {
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        line_items: [
+          {
+            price_data: {
+              currency: "INR",
+              unit_amount: bill_details.total_bill * 100,
+              product_data: {
+                name: "Monthly bill",
+              },
+            },
+            quantity: 1,
+          },
+        ],
+        mode: "payment",
+        success_url: `${process.env.PAYMENT_SUCCESS_URL}?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${process.env.PAYMENT_FAILURE_URL}`,
+        metadata: {
+          occupant_id: bill_details.occupant_id,
+          bill_id: bill_id,
+        },
+      });
+      res.send(session.url);
+    }
+  } catch (err) {
+    console.log(err);
+    res.send({ alertMsg: err.message });
+  }
+});
+
+// after successfullPayment
+exports.successfullPayment = expressAsyncHandler(async (req, res) => {
+  let session_id = req.params.session_id;
+  console.log(session_id);
+  let sessionObj = await stripe.checkout.sessions.retrieve(session_id);
+  console.log(sessionObj.payment_status);
+  if (sessionObj.payment_status == "paid") {
+    console.log("session Obj", sessionObj.metadata.bill_id);
+    await db.Bills.update(
+      {
+        paid_date: new Date(),
+        bill_status: true,
+      },
+      {
+        where: {
+          id: Number(sessionObj.metadata.bill_id),
+        },
+      }
+    );
+
+    res.send({ message: "updated" });
+  }
 });

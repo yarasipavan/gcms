@@ -22,6 +22,8 @@ const {
   updateProfile,
   getProfile,
   getBill,
+  createPaymentSession,
+  successfullPayment,
 } = require("../controllers/occupant.controller");
 
 // routes
@@ -51,6 +53,10 @@ router.get("/profile", verify(["occupant"]), getProfile);
 
 // get bill
 router.get("/bill/year/:year/month/:month", verify(["occupant"]), getBill);
+
+// pay link
+router.get("/paylink/:bill_id", verify(["occupant"]), createPaymentSession);
+router.get("/successfullpayment/:session_id", successfullPayment);
 
 // export router
 module.exports = router;

@@ -30,12 +30,12 @@ app.use("/security", securityGuardRoute);
 // schedule
 // ----------------------
 
-// error handler middleware
-app.use((err, req, res, next) => {
-  res.send({ errMessage: err.messgae });
-});
-
 // invalid path handler
 app.use("*", (req, res, next) => {
   res.send({ pathError: "Invalid path" });
+});
+
+// error handler middleware
+app.use((err, req, res, next) => {
+  res.send({ errMessage: err.messgae });
 });
