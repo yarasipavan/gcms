@@ -4,7 +4,7 @@ const router = express.Router();
 
 // import middlewares
 const check_flat_vacant = require("../middlewares/check_flat_vacant");
-const { verifyAdmin } = require("../middlewares/verifyAdmin");
+const { verify } = require("../middlewares/verify");
 const {
   addFlatMiddleware,
   addOwnerMiddleware,
@@ -49,125 +49,143 @@ const {
   getBill,
   updateServiceCosts,
   sendMailToOccupants,
+  dashboard,
+  getMonthlyBillSum,
+  getServices,
 } = require("../controllers/admin.controllers");
 
 // routes
 
 // get flat details
-router.get("/flats-details", verifyAdmin, getFlatsDetails);
+router.get("/flats-details", verify(["admin"]), getFlatsDetails);
 
 // get vacant flats
-router.get("/vacant-flats", verifyAdmin, getVacantFlats);
+router.get("/vacant-flats", verify(["admin"]), getVacantFlats);
 
 // add flat
-router.post("/flat", verifyAdmin, addFlatMiddleware, addFlat);
+router.post("/flat", verify(["admin"]), addFlatMiddleware, addFlat);
 
 // update flat
 router.put(
   "/flat/block/:block/flat_number/:flat_number",
+  verify(["admin"]),
   addFlatMiddleware,
-  verifyAdmin,
   updateFlat
 );
 
 // get owner
-router.get("/owner/owner_id/:owner_id", verifyAdmin, getOwner);
+router.get("/owner/owner_id/:owner_id", verify(["admin"]), getOwner);
 
-router.get("/owners", verifyAdmin, getAllOwners);
+router.get("/owners", verify(["admin"]), getAllOwners);
 
 // add owner
-router.post("/owner", verifyAdmin, addOwnerMiddleware, addOwner);
+router.post("/owner", verify(["admin"]), addOwnerMiddleware, addOwner);
 
 // update change owner
 router.put(
   "/owner/owner_id/:owner_id",
+  verify(["admin"]),
   updateOwnerDetailsMiddleware,
-  verifyAdmin,
+
   updateOwner
 );
 
 // change owner
-router.put("/changeOwner", changeOwnerJoi, verifyAdmin, changeOwner);
+router.put("/changeOwner", verify(["admin"]), changeOwnerJoi, changeOwner);
 
 // add occupant
 router.post(
   "/occupant",
+  verify(["admin"]),
   addOccupantJoi,
-  verifyAdmin,
+
   check_flat_vacant,
   addOccupant
 );
 
 // get occupant
-router.get("/occupant/:occupant_id", verifyAdmin, getOccupant);
+router.get("/occupant/:occupant_id", verify(["admin"]), getOccupant);
 
 // get All occupants
-router.get("/occupants", verifyAdmin, getAllOccupants);
+router.get("/occupants", verify(["admin"]), getAllOccupants);
 
 // get overall occupants
-router.get("/overall-occupants", verifyAdmin, getOverallOccupants);
+router.get("/overall-occupants", verify(["admin"]), getOverallOccupants);
 
 // update occupant
 router.put(
   "/occupant/:occupant_id",
+  verify(["admin"]),
   updateOccupantJoi,
-  verifyAdmin,
   updateOccupant
 );
 // delete / remove occupant
 router.delete(
   "/occupant/:occupant_id",
+  verify(["admin"]),
   removeOccupantJoi,
-  verifyAdmin,
   deleteOccupant
 );
 
 // add security guard
-router.post("/security", addSecurityGuardJoi, verifyAdmin, addSecurityGuard);
+router.post(
+  "/security",
+  verify(["admin"]),
+  addSecurityGuardJoi,
+  addSecurityGuard
+);
 
 // get security details
-router.get("/security/:id", verifyAdmin, getSecurity);
+router.get("/security/:id", verify(["admin"]), getSecurity);
 
 // get all security
-router.get("/all-security", verifyAdmin, getAllSecurity);
+router.get("/all-security", verify(["admin"]), getAllSecurity);
 
 // update security
 router.put(
   "/security/:id",
+  verify(["admin"]),
   updateSecurityGuardJoi,
-  verifyAdmin,
   updateSecurity
 );
 
 // delete security
 router.delete(
   "/security/:id",
+  verify(["admin"]),
   deleteSecurityGuardJoi,
-  verifyAdmin,
   deleteSecurity
 );
 
 // update service costs
 router.put(
   "/update-service-costs",
+  verify(["admin"]),
   updateServiceChargesJoi,
-  verifyAdmin,
   updateServiceCosts
 );
 
 // get bill
 router.get(
   "/bill/occupant/:occupant_id/year/:year/month/:month",
+  verify(["admin"]),
   getBillJoi,
-  verifyAdmin,
   getBill
 );
 
 // send mail to all occupants
 router.post(
   "/mail-to-occupants",
+  verify(["admin"]),
   sendMailsJoi,
-  verifyAdmin,
   sendMailToOccupants
 );
+
+// get services
+router.get("/services", verify(["admin"]), getServices);
+
+//get billdata
+router.get("/billData", verify(["admin"]), getMonthlyBillSum);
+
+router.get("/dashboard", verify(["admin"]), dashboard);
 module.exports = router;

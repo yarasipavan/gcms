@@ -54,12 +54,17 @@ exports.updateVisitorRecord = expressAsyncHandler(async (req, res) => {
 exports.visitorReturned = expressAsyncHandler(async (req, res) => {
   let [updates] = await db.Visitors_record.update(
     { returned_at: new Date() },
-    { where: { id: req.params.id } }
+    { where: { id: req.params.id, returned_at: null } }
   );
   if (updates) {
-    res.status(200).send({ message: "Returned Noted" });
+    let record = await db.Visitors_record.findOne({
+      where: { id: req.params.id },
+    });
+    res.status(200).send({ message: "Returned Noted", payload: record });
   } else {
-    res.send({ alertMsg: "Something went wrong.... please try again" });
+    res
+      .status(500)
+      .send({ alertMsg: "Something went wrong.... please try again" });
   }
 });
 // get the records from dateTime
@@ -78,6 +83,10 @@ exports.getVisitorsRecordOnParticularTime = expressAsyncHandler(
           { returned_at: { [Sequelize.Op.between]: [startTime, endTime] } },
         ],
       },
+      order: [
+        ["returned_at", "desc"],
+        ["visited_at", "desc"],
+      ],
     });
     records.length
       ? res.status(200).send(records)

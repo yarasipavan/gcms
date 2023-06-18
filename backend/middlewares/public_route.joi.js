@@ -1,5 +1,4 @@
 const Joi = require("joi");
-const { join } = require("path");
 
 // login
 const loginSchema = Joi.object().keys({

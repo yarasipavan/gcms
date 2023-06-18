@@ -68,7 +68,7 @@ const billCalculation = async () => {
           attributes: ["rent"],
           transaction: t,
         });
-        charges["rent_bill"] = rentRecord.rent;
+        charges["rent_bill"] = rentRecord?.rent;
 
         // if bill record of last month is already existed then update that record
         // else add i.e create bill record

@@ -3,9 +3,7 @@ const express = require("express");
 const router = express.Router();
 
 // middlewares
-const {
-  verifySecurityOccupantAdmin,
-} = require("../middlewares/verifySecurityOccupantAdmin");
+const { verify } = require("../middlewares/verify");
 
 const {
   loginJoi,
@@ -30,8 +28,8 @@ router.post("/login", loginJoi, login);
 // change password
 router.post(
   "/change-password",
+  verify(["security", "admin", "occupant"]),
   changePasswordJoi,
-  verifySecurityOccupantAdmin,
   changePassword
 );
 

@@ -1,11 +1,10 @@
 const db = require("../models/index");
-const { Sequelize } = require("sequelize");
+const { Sequelize, fn, col, Op } = require("sequelize");
 
 const expressAsyncHandler = require("express-async-handler");
 const bcryptjs = require("bcryptjs");
 const { transporter } = require("../custom_modules/transporter");
-const { request } = require("express");
-
+const { calculateBill } = require("./calculateBill");
 // methods
 // method to generate password
 const generatePassword = () => {
@@ -216,65 +215,75 @@ const changeOwner = expressAsyncHandler(async (req, res) => {
 
 // add occupant
 const addOccupant = expressAsyncHandler(async (req, res) => {
-  // if occupied_from is not found then add today's date
-  if (!req.body.occupied_from) {
-    req.body.occupied_from = new Date();
-  }
-
-  const t = await db.sequelize.transaction();
-  try {
-    // create occupant
-    let occupant = await db.Occupants.create(req.body, { transaction: t });
-
-    let updatesInFlats = {
-      occupant_id: occupant.occupant_id,
-      ownership: req.body.flat.ownership,
-      flat_status: true,
-    };
-    if (updatesInFlats["ownership"] == "tenant") {
-      if (req.body.flat.rent) {
-        updatesInFlats.rent = req.body.flat.rent;
-      }
-    } else {
-      updatesInFlats.rent = 0;
+  // check email is already existed
+  let record = await db.Credentials.findOne({
+    where: { username: req.body.email, status: true },
+  });
+  if (record) {
+    res.status(400).send({
+      alertMsg: "Email already registered and in use.. try again with new one",
+    });
+  } else {
+    // if occupied_from is not found then add today's date
+    if (!req.body.occupied_from) {
+      req.body.occupied_from = new Date();
     }
 
-    await db.Flats.update(updatesInFlats, {
-      where: {
-        block: req.body.flat.block,
-        flat_number: req.body.flat.flat_number,
-      },
-      transaction: t,
-    });
+    const t = await db.sequelize.transaction();
+    try {
+      // create occupant
+      let occupant = await db.Occupants.create(req.body, { transaction: t });
 
-    // add occupant id in services;
-    await db.Services.create(
-      { occupant_id: occupant.occupant_id },
-      { transaction: t }
-    );
+      let updatesInFlats = {
+        occupant_id: occupant.occupant_id,
+        ownership: req.body.flat.ownership,
+        flat_status: true,
+      };
+      if (updatesInFlats["ownership"] == "tenant") {
+        if (req.body.flat.rent) {
+          updatesInFlats.rent = req.body.flat.rent;
+        }
+      } else {
+        updatesInFlats.rent = 0;
+      }
 
-    // generate credentails
-    let password = generatePassword();
-    let hashedPassword = await bcryptjs.hash(password, 5);
-    let credentials = await db.Credentials.create(
-      {
-        username: req.body.email,
-        password: hashedPassword,
-        role: "occupant",
-        user_id: occupant.dataValues.occupant_id,
-      },
-      { transaction: t }
-    );
+      await db.Flats.update(updatesInFlats, {
+        where: {
+          block: req.body.flat.block,
+          flat_number: req.body.flat.flat_number,
+        },
+        transaction: t,
+      });
 
-    // send credenatial to mail
-    await sendCredentials(credentials.username, password);
+      // add occupant id in services;
+      await db.Services.create(
+        { occupant_id: occupant.occupant_id },
+        { transaction: t }
+      );
 
-    await t.commit();
-    res.send({ message: "Ocuppant added succesfully", payload: occupant });
-  } catch (err) {
-    console.log(err);
-    await t.rollback();
-    res.send({ alertMsg: "Something went wrong... occupant not added" });
+      // generate credentails
+      let password = generatePassword();
+      let hashedPassword = await bcryptjs.hash(password, 5);
+      let credentials = await db.Credentials.create(
+        {
+          username: req.body.email,
+          password: hashedPassword,
+          role: "occupant",
+          user_id: occupant.dataValues.occupant_id,
+        },
+        { transaction: t }
+      );
+
+      // send credenatial to mail
+      await sendCredentials(credentials.username, password);
+
+      await t.commit();
+      res.send({ message: "Ocuppant added succesfully", payload: occupant });
+    } catch (err) {
+      console.log(err);
+      await t.rollback();
+      res.send({ alertMsg: "Something went wrong... occupant not added" });
+    }
   }
 });
 
@@ -330,15 +339,17 @@ const updateOccupant = expressAsyncHandler(async (req, res) => {
 const deleteOccupant = expressAsyncHandler(async (req, res) => {
   //set ownership and occupant_id to null and flat status to false in flats
   // add vacated_at as today's date in occupants
+  let occupant_id = req.params.occupant_id;
   const t = await db.sequelize.transaction();
   try {
+    await calculateBill(occupant_id, t);
     await db.Flats.update(
       { ownership: null, occupant_id: null, flat_status: false },
-      { where: { occupant_id: req.params.occupant_id }, transaction: t }
+      { where: { occupant_id: occupant_id }, transaction: t }
     );
     await db.Occupants.update(
       { vacated_at: new Date() },
-      { where: { occupant_id: req.params.occupant_id }, transaction: t }
+      { where: { occupant_id: occupant_id }, transaction: t }
     );
 
     await db.Credentials.update(
@@ -346,7 +357,7 @@ const deleteOccupant = expressAsyncHandler(async (req, res) => {
         status: false,
       },
       {
-        where: { user_id: req.params.occupant_id, role: "occupant" },
+        where: { user_id: occupant_id, role: "occupant" },
         transaction: t,
       }
     );
@@ -354,6 +365,7 @@ const deleteOccupant = expressAsyncHandler(async (req, res) => {
     res.status(200).send({ message: "Occupant removed successfully" });
   } catch (err) {
     await t.rollback();
+    console.log(err);
     res
       .status(500)
       .send({ alertMsg: "Something went wrong... please try again" });
@@ -362,38 +374,50 @@ const deleteOccupant = expressAsyncHandler(async (req, res) => {
 
 // add security guard
 const addSecurityGuard = expressAsyncHandler(async (req, res) => {
-  const t = await db.sequelize.transaction();
-  try {
-    // add security guard details in security_guard
-    let security = await db.Security_guard.create(req.body, { transaction: t });
+  // check email is already existed
+  let record = await db.Credentials.findOne({
+    where: { username: req.body.email, status: true },
+  });
+  if (record) {
+    res.status(400).send({
+      alertMsg: "Email already registered and in use.. try again with new one",
+    });
+  } else {
+    const t = await db.sequelize.transaction();
+    try {
+      // add security guard details in security_guard
+      let security = await db.Security_guard.create(req.body, {
+        transaction: t,
+      });
 
-    // generate credentials and insert in credentails table
-    let password = generatePassword();
-    let hashedPassword = await bcryptjs.hash(password, 5);
+      // generate credentials and insert in credentails table
+      let password = generatePassword();
+      let hashedPassword = await bcryptjs.hash(password, 5);
 
-    await db.Credentials.create(
-      {
-        user_id: security.id,
-        username: security.email,
-        password: hashedPassword,
-        role: "security",
-      },
-      { transaction: t }
-    );
+      await db.Credentials.create(
+        {
+          user_id: security.id,
+          username: security.email,
+          password: hashedPassword,
+          role: "security",
+        },
+        { transaction: t }
+      );
 
-    // send mail the credentials
-    await sendCredentials(security.email, password);
+      // send mail the credentials
+      await sendCredentials(security.email, password);
 
-    await t.commit();
-    res
-      .status(201)
-      .send({ message: "security added successfully", payload: security });
-  } catch (error) {
-    console.log(error);
-    await t.rollback();
-    res
-      .status(500)
-      .send({ alertMsg: "Something went wrong.. Security guard not added" });
+      await t.commit();
+      res
+        .status(201)
+        .send({ message: "security added successfully", payload: security });
+    } catch (error) {
+      console.log(error);
+      await t.rollback();
+      res
+        .status(500)
+        .send({ alertMsg: "Something went wrong.. Security guard not added" });
+    }
   }
 });
 
@@ -505,7 +529,81 @@ const sendMailToOccupants = expressAsyncHandler(async (req, res) => {
     }
   });
 });
+const dashboard = expressAsyncHandler(async (req, res) => {
+  const t = await db.sequelize.transaction();
+  // get the no. of flats and occupied flats and active security count
+  let dashboardObj = {
+    flats: 0,
+    occupied_flats: 0,
+    vacant_flats: 0,
+    security: 0,
+  };
+  try {
+    // get the flat details
+    let flats = await db.Flats.findAll({ t });
+    // calculate the count
+    dashboardObj.flats = flats.length;
+    flats.map((flat) => {
+      flat.occupant_id
+        ? dashboardObj.occupied_flats++
+        : dashboardObj.vacant_flats++;
+    });
 
+    // get the actice security count
+    dashboardObj.security = await db.Credentials.count({
+      where: { role: "security", status: true },
+      t,
+    });
+    await t.commit();
+    res.send(dashboardObj);
+  } catch (err) {
+    await t.rollback();
+    res.status(500).send({ alertMsg: "Something went wrong" });
+  }
+});
+
+const getServices = expressAsyncHandler(async (req, res) => {
+  let servicesCharges = await db.Service_charges.findOne({
+    order: [["id", "desc"]],
+    attributes: { exclude: ["id"] },
+  });
+  res.send(servicesCharges);
+});
+
+const getMonthlyBillSum = async (req, res) => {
+  try {
+    const currentDate = new Date();
+    const startDate = new Date(
+      currentDate.getFullYear() - 1,
+      currentDate.getMonth(),
+      1
+    );
+    const endDate = currentDate;
+
+    const result = await db.Bills.findAll({
+      attributes: [
+        [fn("YEAR", col("billed_date")), "year"],
+        [fn("MONTH", col("billed_date")), "month"],
+        [fn("SUM", col("total_bill")), "totalSum"],
+      ],
+      where: {
+        billed_date: {
+          [Op.between]: [startDate, endDate],
+        },
+      },
+      group: ["year", "month"],
+      order: [
+        ["year", "ASC"],
+        ["month", "ASC"],
+      ],
+    });
+
+    res.send(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error retrieving monthly bill sums." });
+  }
+};
 module.exports = {
   getFlatsDetails,
   addFlat,
@@ -531,4 +629,7 @@ module.exports = {
   getBill,
   updateServiceCosts,
   sendMailToOccupants,
+  dashboard,
+  getServices,
+  getMonthlyBillSum,
 };

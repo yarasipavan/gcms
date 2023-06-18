@@ -25,7 +25,7 @@ module.exports = {
      * await queryInterface.dropTable('users');
      */
     await queryInterface.changeColumn("Owners", "phone", {
-      type: Sequelize.INTEGER,
+      type: Sequelize.BIGINT,
     });
     await queryInterface.changeColumn("Occupants", "phone", {
       type: Sequelize.INTEGER,

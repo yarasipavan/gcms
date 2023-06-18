@@ -2,7 +2,18 @@ const Joi = require("joi");
 
 // add services
 const addServicesSchema = Joi.object().keys({
-  services: Joi.array().items(Joi.string().required()),
+  services: Joi.array().items(
+    Joi.string()
+      .required()
+      .valid(
+        "swimming_pool",
+        "house_keeping",
+        "parking",
+        "park",
+        "indoor_auditorium",
+        "gym"
+      )
+  ),
 });
 
 exports.addServicesJoi = (req, res, next) => {
@@ -16,7 +27,16 @@ exports.addServicesJoi = (req, res, next) => {
 
 // delete service
 const deleteServiceSchema = Joi.object().keys({
-  service: Joi.string().required(),
+  service: Joi.string()
+    .required()
+    .valid(
+      "swimming_pool",
+      "house_keeping",
+      "parking",
+      "park",
+      "indoor_auditorium",
+      "gym"
+    ),
 });
 
 exports.deleteServiceJoi = (req, res, next) => {
@@ -31,8 +51,8 @@ exports.deleteServiceJoi = (req, res, next) => {
 
 // update profile
 const updateProfileSchema = Joi.object().keys({
-  name: Joi.string(),
-  phone: Joi.number(),
+  name: Joi.string().min(3),
+  phone: Joi.number().min(1000000000).max(9999999999),
 });
 
 exports.updateProfileJoi = (req, res, next) => {
@@ -46,8 +66,8 @@ exports.updateProfileJoi = (req, res, next) => {
 
 // get bill
 const getBillSchema = Joi.object().keys({
-  year: Joi.number().required(),
-  month: Joi.number().required(),
+  year: Joi.number().required().min(2022).max(new Date().getFullYear()),
+  month: Joi.number().required().min(1).max(12),
 });
 
 exports.getBillJoi = (req, res, next) => {

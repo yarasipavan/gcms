@@ -1,5 +1,5 @@
 "use strict";
-const { Model } = require("sequelize");
+const { Model, DATE } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Bills extends Model {
     /**
@@ -31,6 +31,11 @@ module.exports = (sequelize, DataTypes) => {
       total_bill: DataTypes.INTEGER,
       billed_date: DataTypes.DATE,
       bill_doc: DataTypes.BLOB,
+      bill_status: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+      paid_date: DataTypes.DATE,
     },
     {
       sequelize,
