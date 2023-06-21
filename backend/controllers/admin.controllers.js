@@ -26,10 +26,11 @@ const sendCredentials = async (email, password) => {
     from: "Admin",
     to: email,
     subject: "Login Credentials|Gated Community Management System -Testing",
-    html: `<center></center><h5>Hey... Welcome</h5><center></center>
-  <h6>Here is your Login Credentials</h6>
+    html: `<center></center><h2>Hey... Welcome</h2><center></center>
+  <h4>Here is your Login Credentials</h4>
   <p>Username: ${email}</p>
-  <p>Password: ${password}</p>`,
+  <p>Password: ${password}</p>
+  <p>Note*: The password will expires in next 7 days... please activate your account within 7 days by login and changing password</p>`,
   };
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
@@ -598,12 +599,87 @@ const getMonthlyBillSum = async (req, res) => {
       ],
     });
 
-    res.send(result);
+    const allMonths = [];
+    let tempDate = new Date(startDate);
+    while (tempDate <= endDate) {
+      allMonths.push({
+        year: tempDate.getFullYear(),
+        month: tempDate.getMonth() + 1,
+        totalSum: 0,
+      });
+      tempDate.setMonth(tempDate.getMonth() + 1);
+    }
+    result.forEach((item) => {
+      allMonths.forEach((month) => {
+        if (
+          month.year == item.dataValues.year &&
+          month.month == item.dataValues.month
+        ) {
+          month.totalSum = item.dataValues.totalSum;
+        }
+      });
+    });
+
+    res.send(allMonths);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error retrieving monthly bill sums." });
   }
 };
+
+// generate credentials
+
+const generateCredentials = async (req, res) => {
+  try {
+    // get the credentail id from params
+    let credential_id = req.params.credential_id;
+    // get the details from db
+    let credential_details = await db.Credentials.findByPk(credential_id);
+    if (credential_details) {
+      // check the user is active or not
+      if (!credential_details.status) {
+        res.status(400).send({ alertMsg: "User account is deactivated" });
+      } else {
+        // generate the password
+        let password = generatePassword();
+        let hashedPassword = await bcryptjs.hash(password, 5);
+        // update in db ->password,isfirstlogin and passwordexpires
+        let today = new Date();
+        let passwordexpires = new Date(today);
+        passwordexpires.setDate(today.getDate() + 7);
+        await db.Credentials.update(
+          {
+            password: hashedPassword,
+            isfirstlogin: true,
+            passwordexpires: passwordexpires,
+          },
+          { where: { id: credential_id } }
+        );
+        await sendCredentials(credential_details.username, password);
+        res.send({ message: "Credentials sent successfully" });
+      }
+    } else {
+      res.status(400).send({ alertMsg: "Invalid credentail id" });
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({ alertMsg: err.message });
+  }
+};
+
+const getCredentailsDetails = async (req, res) => {
+  try {
+    let credential_details = await db.Credentials.findAll({
+      where: { status: true, isfirstlogin: true },
+      attributes: ["id", "user_id", "username", "role"],
+    });
+    res.send(credential_details);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({ alertMsg: err.message });
+  }
+};
+
 module.exports = {
   getFlatsDetails,
   addFlat,
@@ -632,4 +708,6 @@ module.exports = {
   dashboard,
   getServices,
   getMonthlyBillSum,
+  generateCredentials,
+  getCredentailsDetails,
 };

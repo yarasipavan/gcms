@@ -2,6 +2,7 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const path = require("path");
 app.use(cors());
 // import modules
 const adminRoute = require("./routes/admin.routes");
@@ -15,6 +16,9 @@ const billSchedule = require("./schedule/bill.schedule");
 //  configure dotenv
 require("dotenv").config();
 
+//merge fontend with backend
+app.use(express.static(path.join(__dirname, "../frontend/build")));
+
 // make express application to listen the client request
 const port = process.env.PORT || 3030;
 app.listen(port, () => {
@@ -27,9 +31,10 @@ app.use("/admin", adminRoute);
 app.use("/occupant", occupantRoute);
 app.use("/security", securityGuardRoute);
 
-// schedule
-// ----------------------
-
+//page refresh handler
+app.use((req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
+});
 // invalid path handler
 app.use("*", (req, res, next) => {
   res.send({ pathError: "Invalid path" });

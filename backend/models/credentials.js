@@ -22,6 +22,12 @@ module.exports = (sequelize, DataTypes) => {
       status: { type: DataTypes.BOOLEAN, defaultValue: true, allowNull: false },
       role: { type: DataTypes.STRING, allowNull: false },
       reset_token: { type: DataTypes.STRING },
+      isfirstlogin: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: 1,
+        allowNull: false,
+      },
+      passwordexpires: { type: DataTypes.DATE },
     },
     {
       sequelize,

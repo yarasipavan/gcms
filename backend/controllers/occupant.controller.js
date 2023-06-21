@@ -5,7 +5,7 @@ require("dotenv").config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 // get using services;
-exports.getUsingServices = expressAsyncHandler(async (req, res) => {
+exports.getUsingServices = async (req) => {
   let serviceDetails = await db.Services.findOne({
     where: { occupant_id: req.user.user_id },
   });
@@ -24,11 +24,11 @@ exports.getUsingServices = expressAsyncHandler(async (req, res) => {
       usingServices.push(service);
     }
   }
-  res.status(200).send(usingServices);
-});
+  return usingServices;
+};
 
 // get not using services
-exports.getNotUsingServices = expressAsyncHandler(async (req, res) => {
+exports.getNotUsingServices = async (req) => {
   let serviceDetails = await db.Services.findOne({
     where: { occupant_id: req.user.user_id },
   });
@@ -50,17 +50,17 @@ exports.getNotUsingServices = expressAsyncHandler(async (req, res) => {
       notUsingServices.push(service);
     }
   }
-  res.status(200).send(notUsingServices);
-});
+  return notUsingServices;
+};
 
 // add services
-exports.addServices = expressAsyncHandler(async (req, res) => {
+exports.addServices = async (user, body) => {
   // get the servicesDatils of occupant
   let serviceDetails = await db.Services.findOne({
-    where: { occupant_id: req.user.user_id },
+    where: { occupant_id: user.user_id },
   });
 
-  let services = req.body.services;
+  let services = body.services;
 
   let addServices = {};
 
@@ -73,39 +73,29 @@ exports.addServices = expressAsyncHandler(async (req, res) => {
       addServices[`${service}_ends`] = null;
     }
   });
-  console.log(addServices);
 
   // update service details of occupant
   let [updates] = await db.Services.update(addServices, {
-    where: { occupant_id: req.user.user_id },
+    where: { occupant_id: user.user_id },
   });
 
   // get the latest details
   let updatedServiceDetails = await db.Services.findOne({
-    where: { occupant_id: req.user.user_id },
+    where: { occupant_id: user.user_id },
   });
 
-  if (updates) {
-    res.status(201).send({
-      message: "Services added successfully",
-      payload: updatedServiceDetails,
-    });
-  } else {
-    res
-      .status(500)
-      .send({ alertMsg: "Something went wrong... please try again" });
-  }
-});
+  return updatedServiceDetails;
+};
 
 // stop services
-exports.stopService = expressAsyncHandler(async (req, res) => {
-  let { service } = req.body;
+exports.stopService = async (user, body) => {
+  let { service } = body;
   const t = await db.sequelize.transaction();
 
   try {
     // get the service starts date
     let result = await db.Services.findOne({
-      where: { occupant_id: req.user.user_id },
+      where: { occupant_id: user.user_id },
       attributes: [`${service}_starts`],
       transaction: t,
     });
@@ -148,7 +138,7 @@ exports.stopService = expressAsyncHandler(async (req, res) => {
         billed_date: {
           [Sequelize.Op.between]: [start_bill_date, end_bill_date],
         },
-        occupant_id: req.user.user_id,
+        occupant_id: user.user_id,
       },
       transaction: t,
     });
@@ -164,7 +154,7 @@ exports.stopService = expressAsyncHandler(async (req, res) => {
     else {
       await db.Bills.create(
         {
-          occupant_id: req.user.user_id,
+          occupant_id: user.user_id,
           [`${service}_bill`]: billAmount,
           billed_date: end_date,
         },
@@ -176,48 +166,38 @@ exports.stopService = expressAsyncHandler(async (req, res) => {
 
     await db.Services.update(
       { [`${service}_ends`]: end_date },
-      { where: { occupant_id: req.user.user_id }, transaction: t }
+      { where: { occupant_id: user.user_id }, transaction: t }
     );
-
     await t.commit();
-    res.status(200).send({ message: "service paused successfully" });
+    return true;
   } catch (err) {
     await t.rollback();
-    console.log(err.message);
-    res
-      .status(500)
-      .send({ alertmsg: "Something went wrong.... service not stopped" });
+    throw new Error(err.message);
   }
-});
+};
 
 // update profile
-exports.updateProfile = expressAsyncHandler(async (req, res) => {
-  let [updates] = await db.Occupants.update(req.body, {
-    where: { occupant_id: req.user.user_id },
+exports.updateProfile = async (user, body) => {
+  let [updates] = await db.Occupants.update(body, {
+    where: { occupant_id: user.user_id },
   });
 
-  if (updates) {
-    // get the latest details
-    let updatedOccupant = await db.Occupants.findByPk(req.user.user_id);
-    res
-      .status(200)
-      .send({ message: "Profile updated", payload: updatedOccupant });
-  } else {
-    res.status(200).send({ alertMsg: "No Updations found" });
-  }
-});
+  // get the latest details
+  let updatedOccupant = await db.Occupants.findByPk(user.user_id);
+  return updatedOccupant;
+};
 
 // get profile
-exports.getProfile = expressAsyncHandler(async (req, res) => {
-  let occupant = await db.Occupants.findByPk(req.user.user_id, {
+exports.getProfile = async (user) => {
+  let occupant = await db.Occupants.findByPk(user.user_id, {
     include: [{ model: db.Flats, include: [{ model: db.Owners }] }],
   });
-  res.status(200).send({ message: "Profile", payload: occupant });
-});
+  return occupant;
+};
 
-exports.getBill = expressAsyncHandler(async (req, res) => {
-  let month = parseInt(req.params.month) - 1;
-  let year = parseInt(req.params.year);
+exports.getBill = async (user, params) => {
+  let month = parseInt(params.month) - 1;
+  let year = parseInt(params.year);
 
   // bill is calculated on next month
 
@@ -230,27 +210,27 @@ exports.getBill = expressAsyncHandler(async (req, res) => {
   // get the bill
   let billRecord = await db.Bills.findOne({
     where: {
-      occupant_id: req.user.user_id,
+      occupant_id: user.user_id,
       billed_date: {
         [Sequelize.Op.between]: [nextMonthFirstDate, nextMonthLastDate],
       },
     },
+    order: [["id", "desc"]],
   });
-  if (billRecord) res.status(200).send(billRecord);
-  else res.status(200).send({ alertMsg: "No billing found" });
-});
+  return billRecord;
+};
 
 // create payment session
-exports.createPaymentSession = expressAsyncHandler(async (req, res) => {
+exports.createPaymentSession = async (params) => {
   try {
-    let bill_id = req.params.bill_id;
+    let bill_id = params.bill_id;
     // get the bill detais
     let bill_details = await db.Bills.findByPk(bill_id);
-    if (!bill_details) res.status(400).send({ alertMsg: "Invalid Bill Id" });
+    if (!bill_details) throw new Error("Invalid Bill Id");
     if (!bill_details.total_bill) {
-      res.status(400).send({ alertMsg: "bill is not calculated" });
+      throw new Error("Bill is not calculated");
     } else if (bill_details.bill_status) {
-      res.status(400).send({ alertMsg: "Bill already paid" });
+      throw new Error("Bill is already paid");
     } else {
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
@@ -274,23 +254,19 @@ exports.createPaymentSession = expressAsyncHandler(async (req, res) => {
           bill_id: bill_id,
         },
       });
-      res.send(session.url);
+      return session.url;
     }
   } catch (err) {
-    console.log(err);
-    res.send({ alertMsg: err.message });
+    throw new Error(err.message);
   }
-});
+};
 
 // after successfullPayment
-exports.successfullPayment = expressAsyncHandler(async (req, res) => {
-  let session_id = req.params.session_id;
-  console.log(session_id);
+exports.successfullPayment = async (params) => {
+  let session_id = params.session_id;
   let sessionObj = await stripe.checkout.sessions.retrieve(session_id);
-  console.log(sessionObj.payment_status);
   if (sessionObj.payment_status == "paid") {
-    console.log("session Obj", sessionObj.metadata.bill_id);
-    await db.Bills.update(
+    let updates = await db.Bills.update(
       {
         paid_date: new Date(),
         bill_status: true,
@@ -301,7 +277,7 @@ exports.successfullPayment = expressAsyncHandler(async (req, res) => {
         },
       }
     );
-
-    res.send({ message: "updated" });
+    if (updates) return true;
+    else return false;
   }
-});
+};

@@ -46,47 +46,69 @@ exports.login = expressAsyncHandler(async (req, res) => {
 
 // change password
 exports.changePassword = expressAsyncHandler(async (req, res) => {
-  // get old_password and new password
-  let { old_password, new_password } = req.body;
-  new_password = new_password.trim();
+  try {
+    // get old_password and new password
+    let { old_password, new_password } = req.body;
+    new_password = new_password.trim();
 
-  // get user credentails details
-  let credentials = await db.Credentials.findOne({
-    where: { user_id: req.user.user_id },
-  });
+    // get user credentails details
+    let credentials = await db.Credentials.findOne({
+      where: { user_id: req.user.user_id },
+    });
 
-  // check the old password is correct
-  if (await bcryptjs.compare(old_password, credentials["password"])) {
-    // check old password and new password is same
-    if (old_password === new_password) {
-      res
-        .status(400)
-        .send({ alertMsg: "old password and new password must be different" });
-    }
-    // check the new password length
-    else if (new_password.length < 8) {
-      res
-        .status(400)
-        .send({ alertMsg: "password must be contain alleast 8 characters" });
+    // check if it is the firsttime login and whether the password expires
+    let today = new Date();
+    if (credentials.isfirstlogin && today > credentials.passwordexpires) {
+      res.status(400).send({
+        alertMsg:
+          "Your password has been expired please contact admin for new password",
+      });
     } else {
-      // update /change the password by hashing
-      let hashedPassword = await bcryptjs.hash(new_password, 5);
-      let [updates] = await db.Credentials.update(
-        { password: hashedPassword },
-        { where: { user_id: req.user.user_id, role: req.user.role } }
-      );
-      if (updates) {
-        res.status(200).send({ message: "Password changed successfully" });
-      } else {
-        res
-          .status(500)
-          .send({ alertMsg: "Something went wrong... please try again" });
+      // check the old password is correct
+      if (await bcryptjs.compare(old_password, credentials["password"])) {
+        // check old password and new password is same
+        if (old_password === new_password) {
+          res.status(400).send({
+            alertMsg: "old password and new password must be different",
+          });
+        }
+        // check the new password length
+        else if (new_password.length < 8) {
+          res.status(400).send({
+            alertMsg: "password must be contain alleast 8 characters",
+          });
+        } else {
+          // update /change the password by hashing
+          let hashedPassword = await bcryptjs.hash(new_password, 5);
+          let [updates] = await db.Credentials.update(
+            { password: hashedPassword, isfirstlogin: false },
+            { where: { user_id: req.user.user_id, role: req.user.role } }
+          );
+          if (updates) {
+            if (credentials.isfirstlogin) {
+              res.status(200).send({
+                message:
+                  "Password changed successfully and your account is activated ",
+              });
+            } else {
+              res.status(200).send({
+                message: "Password changed successfully ",
+              });
+            }
+          } else {
+            res
+              .status(500)
+              .send({ alertMsg: "Something went wrong... please try again" });
+          }
+        }
+      }
+      // if old password is in correct
+      else {
+        res.status(400).send({ alertMsg: "Invalid old password" });
       }
     }
-  }
-  // if old password is in correct
-  else {
-    res.status(400).send({ alertMsg: "Invalid old password" });
+  } catch (err) {
+    console.log(err);
   }
 });
 

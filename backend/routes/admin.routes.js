@@ -52,6 +52,8 @@ const {
   dashboard,
   getMonthlyBillSum,
   getServices,
+  generateCredentials,
+  getCredentailsDetails,
 } = require("../controllers/admin.controllers");
 
 // routes
@@ -188,4 +190,14 @@ router.get("/services", verify(["admin"]), getServices);
 router.get("/billData", verify(["admin"]), getMonthlyBillSum);
 
 router.get("/dashboard", verify(["admin"]), dashboard);
+
+router.get(
+  "/generate-credentials/:credential_id",
+  verify(["admin"]),
+  generateCredentials
+);
+
+// get credentials details
+router.get("/credentials-details", verify(["admin"]), getCredentailsDetails);
+
 module.exports = router;
