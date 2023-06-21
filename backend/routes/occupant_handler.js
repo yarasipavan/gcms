@@ -23,6 +23,7 @@ exports.getUsingServicesHandler = async (req, res) => {
 exports.getNotUsingServicesHandler = async (req, res) => {
   try {
     let services = await getNotUsingServices(req);
+
     res.status(200).send(services);
   } catch (err) {
     res.status(500).send({ error: err.message });
