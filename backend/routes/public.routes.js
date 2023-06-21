@@ -28,7 +28,7 @@ router.post("/login", loginJoi, login);
 // change password
 router.post(
   "/change-password",
-  verify(["security", "admin", "occupant"]),
+  verify(["security", "admin", "occupant", 1]),
   changePasswordJoi,
   changePassword
 );

@@ -28,11 +28,19 @@ exports.verify = (roles) => {
           if (decoded.user.id) {
             let userDetails = await db.Credentials.findByPk(decoded.user.id);
             if (userDetails.status && roles.includes(userDetails.role)) {
-              req.user = {
-                user_id: userDetails.user_id,
-                email: userDetails.username,
-              };
-              next();
+              if (userDetails.isfirstlogin && roles[roles.length - 1] != 1) {
+                res.status(400).send({
+                  alertMsg:
+                    "Your account is not activated ...please change password and then relogin",
+                });
+              } else {
+                req.user = {
+                  user_id: userDetails.user_id,
+                  email: userDetails.username,
+                  role: userDetails.role,
+                };
+                next();
+              }
             } else {
               res
                 .status(401)

@@ -70,10 +70,23 @@ exports.visitorReturned = expressAsyncHandler(async (req, res) => {
 // get the records from dateTime
 exports.getVisitorsRecordOnParticularTime = expressAsyncHandler(
   async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const offset = (page - 1) * limit;
+
     let startTime = req.body.start_time;
     let endTime;
     if (req.body.end_time) endTime = req.body.end_time;
     else endTime = new Date();
+
+    const total = await db.Visitors_record.count({
+      where: {
+        [Sequelize.Op.or]: [
+          { visited_at: { [Sequelize.Op.between]: [startTime, endTime] } },
+          { returned_at: { [Sequelize.Op.between]: [startTime, endTime] } },
+        ],
+      },
+    });
 
     // fetch the records
     let records = await db.Visitors_record.findAll({
@@ -87,9 +100,13 @@ exports.getVisitorsRecordOnParticularTime = expressAsyncHandler(
         ["returned_at", "desc"],
         ["visited_at", "desc"],
       ],
+      limit: limit,
+      offset: offset,
     });
     records.length
-      ? res.status(200).send(records)
+      ? res
+          .status(200)
+          .send({ total: total, page: page, limit: limit, visitors: records })
       : res
           .status(404)
           .send({ alertMsg: "No records found between given time" });
@@ -98,8 +115,17 @@ exports.getVisitorsRecordOnParticularTime = expressAsyncHandler(
 
 // get all visitors record
 exports.getAllVisitorsRecord = expressAsyncHandler(async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const offset = (page - 1) * limit;
+
+  const total = await db.Visitors_record.count();
   let records = await db.Visitors_record.findAll({
+    limit: limit,
+    offset: offset,
     order: [["visited_at", "desc"]],
   });
-  res.status(200).send(records);
+  res
+    .status(200)
+    .send({ visiors: records, total: total, page: page, limit: limit });
 });
