@@ -1,11 +1,10 @@
 {
   "development": {
-    "username": "root",
-    "password": "Pavan@123",
-    "database": "gcms",
+    "username": "***** YOUR DB USERNAME ****",
+    "password": "***** YOUR DB PASSWORD *****",
+    "database": "******YOUR DB NAME**********",
     "host": "127.0.0.1",
-    "dialect": "mysql",
-    "port": 3307
+    "dialect": "mysql"
   },
   "test": {
     "username": "root",
